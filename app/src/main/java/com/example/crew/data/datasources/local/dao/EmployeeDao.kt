@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface EmployeeDao {
     @Insert
-    suspend fun insertEmployee(employee: Employee): Boolean
+    suspend fun insertEmployee(employee: Employee): Long
 
     @Query("SELECT * FROM employees")
     fun getAllEmployees(): Flow<List<Employee>>

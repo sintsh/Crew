@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RoleDao {
     @Insert
-    suspend fun insertRole(role: Role): Boolean
+    suspend fun insertRole(role: Role): Long
 
     @Query("SELECT * FROM roles")
     fun getAllRoles(): Flow<List<Role>>

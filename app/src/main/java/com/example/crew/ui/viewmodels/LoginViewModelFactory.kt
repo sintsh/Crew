@@ -1,4 +1,4 @@
-package com.example.crew.ui.login
+package com.example.crew.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

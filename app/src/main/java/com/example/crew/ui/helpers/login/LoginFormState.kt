@@ -1,4 +1,4 @@
-package com.example.crew.ui.login
+package com.example.crew.ui.helpers.login
 
 /**
  * Data validation state of the login form.

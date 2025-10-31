@@ -1,6 +1,5 @@
-package com.example.crew.ui.login
+package com.example.crew.ui.activities
 
-import android.app.Activity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -15,6 +14,9 @@ import android.widget.Toast
 import com.example.crew.databinding.ActivityCrewMainBinding
 
 import com.example.crew.R
+import com.example.crew.ui.helpers.login.LoggedInUserView
+import com.example.crew.ui.viewmodels.LoginViewModel
+import com.example.crew.ui.viewmodels.LoginViewModelFactory
 
 class CrewMainActivity : AppCompatActivity() {
 
@@ -59,7 +61,7 @@ class CrewMainActivity : AppCompatActivity() {
             if (loginResult.success != null) {
                 updateUiWithUser(loginResult.success)
             }
-            setResult(Activity.RESULT_OK)
+            setResult(RESULT_OK)
 
             //Complete and destroy login activity once successful
             finish()
