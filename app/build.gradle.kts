@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -39,7 +40,7 @@ android {
 }
 
 dependencies {
-
+    //implementations
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -47,7 +48,20 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.rxjava2)
+    implementation(libs.androidx.room.rxjava3)
+    implementation(libs.androidx.room.guava)
+
+
+    //test implementations
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.androidx.room.testing)
+
+    //room paging
+    implementation(libs.androidx.room.paging)
 }
