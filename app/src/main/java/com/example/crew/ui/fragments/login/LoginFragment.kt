@@ -9,7 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.lifecycle.Observer
@@ -24,24 +27,25 @@ import com.example.crew.ui.viewmodels.LoginViewModelFactory
 class LoginFragment : Fragment(R.layout.login_layout) {
 
     private lateinit var loginViewModel: LoginViewModel
-    private lateinit var binding: LoginLayoutBinding
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = LoginLayoutBinding.inflate(layoutInflater)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        val binding = LoginLayoutBinding.inflate(inflater, container, false)
 
         val username = binding.username
         val password = binding.password
         val login = binding.login
         val loading = binding.loading
 
-        Log.i("DontWorry", "onCreate: it works")
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
 
-        loginViewModel.loginFormState.observe(this@LoginFragment, Observer {
+        loginViewModel.loginFormState.observe(viewLifecycleOwner, Observer {
             val loginState = it ?: return@Observer
 
             login.isEnabled = loginState.isDataValid
@@ -54,7 +58,7 @@ class LoginFragment : Fragment(R.layout.login_layout) {
             }
         })
 
-        loginViewModel.loginResult.observe(this@LoginFragment, Observer {
+        loginViewModel.loginResult.observe(viewLifecycleOwner, Observer {
             val loginResult = it ?: return@Observer
 
             loading.visibility = View.GONE
@@ -101,13 +105,8 @@ class LoginFragment : Fragment(R.layout.login_layout) {
                 loginViewModel.login(username.text.toString(), password.text.toString())
             }
         }
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.login_layout, container, false)
+        return binding.root
     }
 
 
@@ -115,7 +114,6 @@ class LoginFragment : Fragment(R.layout.login_layout) {
     private fun updateUiWithUser(model: LoggedInUserView) {
         val welcome = getString(R.string.welcome)
         val displayName = model.displayName
-        // TODO : initiate successful logged in experience
         Toast.makeText(
             context?.applicationContext,
             "$welcome $displayName",
@@ -132,6 +130,8 @@ class LoginFragment : Fragment(R.layout.login_layout) {
 fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
     this.addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(editable: Editable?) {
+            Log.i("detectionUsername", "onCreate: changing username")
+
             afterTextChanged.invoke(editable.toString())
         }
 
