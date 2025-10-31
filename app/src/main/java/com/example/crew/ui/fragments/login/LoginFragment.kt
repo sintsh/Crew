@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.crew.R
 import com.example.crew.databinding.LoginLayoutBinding
 import com.example.crew.ui.helpers.login.LoggedInUserView
@@ -66,8 +67,12 @@ class LoginFragment : Fragment(R.layout.login_layout) {
                 showLoginFailed(loginResult.error)
             }
             if (loginResult.success != null) {
+                val nav = findNavController()
+                val direction = LoginFragmentDirections.actionLoginFragment2ToAdminHomeFragment()
+                nav.navigate(direction)
                 updateUiWithUser(loginResult.success)
             }
+
 //            setResult(RESULT_OK)
 
             //Complete and destroy login activity once successful

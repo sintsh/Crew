@@ -60,6 +60,7 @@
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription=""
         app:layout_constraintStart_toStartOf="@id/form"
         app:layout_constraintTop_toTopOf="@id/form"
         app:layout_constraintEnd_toEndOf="@id/form"
@@ -70,11 +71,14 @@
     <ScrollView
         android:id="@+id/form"
         android:layout_width="0dp"
+        android:paddingVertical="80dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/description"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.3"
+
         >
     <LinearLayout
         android:layout_width="match_parent"
