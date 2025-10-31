@@ -3,7 +3,7 @@ package com.example.crew.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.crew.data.LoginDataSource
-import com.example.crew.data.LoginRepository
+import com.example.crew.data.repositories.LoginRepository
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

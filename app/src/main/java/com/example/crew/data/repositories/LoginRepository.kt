@@ -1,5 +1,7 @@
-package com.example.crew.data
+package com.example.crew.data.repositories
 
+import com.example.crew.data.LoginDataSource
+import com.example.crew.data.Result
 import com.example.crew.data.model.LoggedInUser
 
 /**

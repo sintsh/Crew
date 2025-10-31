@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.crew.R
-import com.example.crew.data.LoginRepository
+import com.example.crew.data.repositories.LoginRepository
 import com.example.crew.data.Result
 import com.example.crew.ui.helpers.login.LoggedInUserView
 import com.example.crew.ui.helpers.login.LoginFormState
