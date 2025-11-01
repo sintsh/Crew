@@ -1,4 +1,4 @@
-package com.example.crew.ui.fragments.admin
+package com.example.crew.app.ui.fragments.admin
 
 import android.os.Bundle
 import android.util.Log
@@ -14,9 +14,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.crew.R
+import com.example.crew.app.ui.adapters.EmployeeListRecyclerAdapter
+import com.example.crew.app.ui.viewmodels.AdminHomeViewModel
 import com.example.crew.databinding.FragmentAdminHomeBinding
-import com.example.crew.ui.adapters.EmployeeListRecyclerAdapter
-import com.example.crew.ui.viewmodels.AdminHomeViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -51,6 +51,7 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
                     ){click->
                         when(click){
                             is EmployeeListRecyclerAdapter.EmployeeClickable.DeleteClick -> {
+                                viewModel.deleteEmployee(click.employeeId)
                                 Snackbar.make(requireContext(),binding.root, "Delete Functionality is not yet implemented",
                                     Snackbar.LENGTH_SHORT).show()
                             }
@@ -72,6 +73,8 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
             Snackbar.make(requireContext(),binding.root, "Added employees",
                 Snackbar.LENGTH_SHORT).show()
         }
+
+        binding.deleteAllButton.setOnClickListener { viewModel.deleteAllEmployees() }
 
     return binding.root
     }

@@ -1,4 +1,4 @@
-package com.example.crew.ui.fragments.login
+package com.example.crew.app.ui.fragments.login
 
 import android.os.Bundle
 import android.text.Editable
@@ -19,10 +19,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.crew.R
+import com.example.crew.app.ui.helpers.login.LoggedInUserView
+import com.example.crew.app.ui.viewmodels.LoginViewModel
+import com.example.crew.app.ui.viewmodels.LoginViewModelFactory
 import com.example.crew.databinding.LoginLayoutBinding
-import com.example.crew.ui.helpers.login.LoggedInUserView
-import com.example.crew.ui.viewmodels.LoginViewModel
-import com.example.crew.ui.viewmodels.LoginViewModelFactory
 
 
 class LoginFragment : Fragment(R.layout.login_layout) {

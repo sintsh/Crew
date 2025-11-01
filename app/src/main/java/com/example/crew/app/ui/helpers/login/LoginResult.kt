@@ -1,4 +1,4 @@
-package com.example.crew.ui.helpers.login
+package com.example.crew.app.ui.helpers.login
 
 /**
  * Authentication result : success (user details) or error message.

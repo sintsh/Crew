@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Crew">
         <activity
-            android:name=".ui.activities.CrewMainActivity"
+            android:name=".app.ui.activities.CrewMainActivity"
             android:exported="true"
             android:label="@string/title_activity_crew_main" >
             <intent-filter>

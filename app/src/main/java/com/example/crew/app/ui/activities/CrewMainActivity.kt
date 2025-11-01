@@ -1,14 +1,11 @@
-package com.example.crew.ui.activities
+package com.example.crew.app.ui.activities
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import com.example.crew.R
-import com.example.crew.ui.viewmodels.LoginViewModel
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import com.example.crew.app.ui.viewmodels.LoginViewModel
 
 class CrewMainActivity : AppCompatActivity() {
 

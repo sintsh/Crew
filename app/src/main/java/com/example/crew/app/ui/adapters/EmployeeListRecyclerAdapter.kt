@@ -1,4 +1,4 @@
-package com.example.crew.ui.adapters
+package com.example.crew.app.ui.adapters
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -50,9 +50,9 @@ data class EmployeeListRecyclerAdapter(
 
 
     sealed class EmployeeClickable{
-        class EditClick(employeeId: Long): EmployeeClickable()
+        class EditClick(val employeeId: Long): EmployeeClickable()
 
-        class DeleteClick(employeeId: Long): EmployeeClickable()
+        class DeleteClick(val employeeId: Long): EmployeeClickable()
     }
 
 

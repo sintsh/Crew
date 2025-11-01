@@ -1,4 +1,4 @@
-package com.example.crew.ui.viewmodels
+package com.example.crew.app.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
