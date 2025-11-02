@@ -38,4 +38,8 @@ class EmployeeRepositoryImpl @Inject constructor(
         employeeDao.deleteAllEmployees()
     }
 
+    override suspend fun getEmployeeById(employeeId: Long): Employee {
+        return employeeDao.getEmployeeById(employeeId)
+    }
+
 }

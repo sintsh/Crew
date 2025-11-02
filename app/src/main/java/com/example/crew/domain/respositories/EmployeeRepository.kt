@@ -11,4 +11,6 @@ interface EmployeeRepository {
     suspend fun deleteEmployee(employeeId: Long)
 
     suspend fun deleteAllEmployees()
+
+    suspend fun getEmployeeById(employeeId: Long): Employee
 }

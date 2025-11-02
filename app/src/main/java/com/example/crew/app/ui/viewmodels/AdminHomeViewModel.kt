@@ -10,6 +10,7 @@ import com.example.crew.domain.usecases.DeleteEmployeeUseCase
 import com.example.crew.domain.usecases.GetEmployeesUseCase
 import com.example.crew.domain.usecases.SaveEmployeeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -58,6 +59,11 @@ class AdminHomeViewModel @Inject constructor(
         viewModelScope.launch {
             deleteAllEmployeesUseCase()
         }
+    }
+
+
+    suspend fun getEmployeeById(employeeId: Long): Flow<EmployeeDE>{
+            return getEmployeesUseCase.getById(employeeId)
     }
 
 //    fun generateRandomAlphanumericString(length: Int): String {

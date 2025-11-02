@@ -25,4 +25,7 @@ interface EmployeeDao {
     @Query("DELETE FROM employees")
     suspend fun deleteAllEmployees()
 
+    @Query("SELECT * FROM employees WHERE employeeId = :employeeId")
+    suspend fun getEmployeeById(employeeId: Long): Employee
+
 }

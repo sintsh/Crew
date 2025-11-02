@@ -31,5 +31,11 @@
         <action
             android:id="@+id/action_employeeActionDialogFragment_to_adminHomeFragment"
             app:destination="@id/adminHomeFragment" />
+        <argument
+            android:name="employee"
+            app:argType="com.example.crew.domain.entities.EmployeeDE" />
+        <argument
+            android:name="action_type"
+            app:argType="com.example.crew.app.ui.helpers.admin.ActionType" />
     </dialog>
 </navigation>

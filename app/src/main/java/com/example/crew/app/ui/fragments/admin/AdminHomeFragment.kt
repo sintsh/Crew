@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.crew.R
 import com.example.crew.app.ui.adapters.EmployeeListRecyclerAdapter
+import com.example.crew.app.ui.helpers.admin.ActionType
 import com.example.crew.app.ui.viewmodels.AdminHomeViewModel
 import com.example.crew.data.datasources.local.entity.Employee
 import com.example.crew.databinding.FragmentAdminHomeBinding
@@ -81,8 +82,14 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
 
 
     private fun navigateToEditPage(employeeId:Long){
-        val nav = findNavController()
-        val direction = AdminHomeFragmentDirections.actionAdminHomeFragmentToEmployeeActionDialogFragment()
-        nav.navigate(direction)
+        viewLifecycleOwner.lifecycleScope.launch {
+            val employee = viewModel.getEmployeeById(employeeId).collectLatest { employeeDE ->
+                val nav = findNavController()
+                val direction = AdminHomeFragmentDirections.actionAdminHomeFragmentToEmployeeActionDialogFragment(employeeDE,
+                    ActionType.EDIT)
+                nav.navigate(direction)
+            }
+
+        }
     }
 }
