@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crew.data.datasources.local.entity.Employee
 import com.example.crew.domain.entities.EmployeeDE
+import com.example.crew.domain.usecases.DeleteEmployeeUseCase
 import com.example.crew.domain.usecases.GetEmployeesUseCase
 import com.example.crew.domain.usecases.SaveEmployeeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,12 +14,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class AdminHomeViewModel @Inject constructor(
     private val getEmployeesUseCase: GetEmployeesUseCase,
-    private val saveEmployeeUseCase: SaveEmployeeUseCase
+    private val saveEmployeeUseCase: SaveEmployeeUseCase,
+    private val deleteEmployeeUseCase: DeleteEmployeeUseCase
 ) : ViewModel() {
 
     private var _employeeList = MutableStateFlow<List<EmployeeDE>>(listOf())
@@ -46,11 +47,13 @@ class AdminHomeViewModel @Inject constructor(
 
 
     fun deleteEmployee(employeeId:Long){
-        //_employeeList.value.filterNot {it.employeeId==employeeId}
+        viewModelScope.launch {
+            deleteEmployeeUseCase(employeeId)
+        }
     }
 
     fun deleteAllEmployees(){
-        //_employeeList.value = mutableListOf<Employee>()
+
     }
 
 //    fun generateRandomAlphanumericString(length: Int): String {

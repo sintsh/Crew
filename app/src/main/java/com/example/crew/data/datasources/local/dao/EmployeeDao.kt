@@ -19,4 +19,7 @@ interface EmployeeDao {
     @Query("SELECT * FROM employees WHERE employeeId = :employeeId")
     fun getEmployeesByRole(employeeId: Long): Flow<List<Employee>>
 
+    @Query("DELETE FROM employees WHERE employeeId = :employeeId")
+    suspend fun deleteEmployee(employeeId: Long)
+
 }

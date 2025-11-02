@@ -7,4 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface EmployeeRepository {
     suspend fun getAllEmployees(): Flow<List<EmployeeDE>>
     suspend fun saveEmployee(employee: Employee)
+
+    suspend fun deleteEmployee(employeeId: Long)
 }

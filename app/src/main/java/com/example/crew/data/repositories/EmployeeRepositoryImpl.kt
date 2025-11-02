@@ -7,8 +7,6 @@ import com.example.crew.data.datasources.local.entity.toEmployeeDE
 import com.example.crew.domain.entities.EmployeeDE
 import com.example.crew.domain.respositories.EmployeeRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -30,6 +28,10 @@ class EmployeeRepositoryImpl @Inject constructor(
 
     override suspend fun saveEmployee(employee: Employee) {
         employeeDao.insertEmployee(employee)
+    }
+
+    override suspend fun deleteEmployee(employeeId: Long) {
+        employeeDao.deleteEmployee(employeeId)
     }
 
 }
