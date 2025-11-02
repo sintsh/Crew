@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crew.data.datasources.local.entity.Employee
 import com.example.crew.domain.entities.EmployeeDE
+import com.example.crew.domain.usecases.DeleteAllEmployeesUseCase
 import com.example.crew.domain.usecases.DeleteEmployeeUseCase
 import com.example.crew.domain.usecases.GetEmployeesUseCase
 import com.example.crew.domain.usecases.SaveEmployeeUseCase
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class AdminHomeViewModel @Inject constructor(
     private val getEmployeesUseCase: GetEmployeesUseCase,
     private val saveEmployeeUseCase: SaveEmployeeUseCase,
-    private val deleteEmployeeUseCase: DeleteEmployeeUseCase
+    private val deleteEmployeeUseCase: DeleteEmployeeUseCase,
+    private val deleteAllEmployeesUseCase: DeleteAllEmployeesUseCase
 ) : ViewModel() {
 
     private var _employeeList = MutableStateFlow<List<EmployeeDE>>(listOf())
@@ -53,7 +55,9 @@ class AdminHomeViewModel @Inject constructor(
     }
 
     fun deleteAllEmployees(){
-
+        viewModelScope.launch {
+            deleteAllEmployeesUseCase()
+        }
     }
 
 //    fun generateRandomAlphanumericString(length: Int): String {

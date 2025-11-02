@@ -9,4 +9,6 @@ interface EmployeeRepository {
     suspend fun saveEmployee(employee: Employee)
 
     suspend fun deleteEmployee(employeeId: Long)
+
+    suspend fun deleteAllEmployees()
 }

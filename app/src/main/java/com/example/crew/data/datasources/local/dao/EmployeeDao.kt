@@ -22,4 +22,7 @@ interface EmployeeDao {
     @Query("DELETE FROM employees WHERE employeeId = :employeeId")
     suspend fun deleteEmployee(employeeId: Long)
 
+    @Query("DELETE FROM employees")
+    suspend fun deleteAllEmployees()
+
 }
