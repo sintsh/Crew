@@ -16,20 +16,4 @@ abstract class CrewDatabase: RoomDatabase(){
     abstract fun employeeDao(): EmployeeDao
     abstract fun roleDao(): RoleDao
     abstract fun employeeRoleCrossRefDao(): EmployeeRoleCrossRefDao
-
-
-    companion object{
-        @Volatile private var INSTANCE: CrewDatabase?=null
-
-        fun getCrewDatabase(context: Context): CrewDatabase{
-            return INSTANCE?:synchronized(this){
-                val instance = Room.databaseBuilder(
-                    context = context.applicationContext,
-                    klass = CrewDatabase::class.java,
-                    name = "").build()
-                INSTANCE = instance
-                instance
-            }
-        }
-    }
 }
