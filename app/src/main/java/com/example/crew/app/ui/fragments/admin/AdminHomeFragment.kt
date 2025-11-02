@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.crew.R
@@ -56,8 +57,7 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
                                     Snackbar.LENGTH_SHORT).show()
                             }
                             is EmployeeListRecyclerAdapter.EmployeeClickable.EditClick -> {
-                                Snackbar.make(requireContext(),binding.root, "Edit Functionality is not yet implemented",
-                                    Snackbar.LENGTH_SHORT).show()
+                                navigateToEditPage(click.employeeId)
                             }
                         }
                     }
@@ -77,5 +77,12 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
         binding.deleteAllButton.setOnClickListener { viewModel.deleteAllEmployees() }
 
     return binding.root
+    }
+
+
+    private fun navigateToEditPage(employeeId:Long){
+        val nav = findNavController()
+        val direction = AdminHomeFragmentDirections.actionAdminHomeFragmentToEmployeeActionDialogFragment()
+        nav.navigate(direction)
     }
 }
