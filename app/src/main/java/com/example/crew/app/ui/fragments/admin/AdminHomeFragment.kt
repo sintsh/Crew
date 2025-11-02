@@ -16,16 +16,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.crew.R
 import com.example.crew.app.ui.adapters.EmployeeListRecyclerAdapter
 import com.example.crew.app.ui.viewmodels.AdminHomeViewModel
+import com.example.crew.data.datasources.local.entity.Employee
 import com.example.crew.databinding.FragmentAdminHomeBinding
+import com.example.crew.domain.entities.EmployeeDE
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
-
-    companion object {
-        fun newInstance() = AdminHomeFragment()
-    }
 
     private val viewModel: AdminHomeViewModel by viewModels()
 
@@ -69,7 +69,7 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
 
 
         binding.createButton.setOnClickListener {
-            viewModel.addEmployee()
+            viewModel.addEmployee(Employee(username = "random",name = "random", lastName = "random", age = 26))
             Snackbar.make(requireContext(),binding.root, "Added employees",
                 Snackbar.LENGTH_SHORT).show()
         }

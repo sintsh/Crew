@@ -1,43 +1,64 @@
 package com.example.crew.app.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.crew.data.datasources.local.entity.Employee
+import com.example.crew.domain.entities.EmployeeDE
+import com.example.crew.domain.usecases.GetEmployeesUseCase
+import com.example.crew.domain.usecases.SaveEmployeeUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.random.Random
 
-class AdminHomeViewModel : ViewModel() {
+@HiltViewModel
+class AdminHomeViewModel @Inject constructor(
+    private val getEmployeesUseCase: GetEmployeesUseCase,
+    private val saveEmployeeUseCase: SaveEmployeeUseCase
+) : ViewModel() {
 
-    private var _employeeList = MutableStateFlow< List<Employee>>(
-        mutableListOf(
-            Employee(1, "someone","John","Doe",29))
-    )
+    private var _employeeList = MutableStateFlow<List<EmployeeDE>>(listOf())
 
     val employeeList = _employeeList.asStateFlow()
 
 
-    fun addEmployee(){
-        _employeeList.value.sortedBy {
-            it.employeeId
+    init {
+        Log.i("Crewhere", ": initialized")
+        viewModelScope.launch {
+            getEmployeesUseCase().collectLatest { employees->
+                Log.i("Crewhere", ": gotten $employees")
+
+                _employeeList.value = employees
+            }
         }
-        _employeeList.value = listOf<Employee>(Employee(generateId(), generateRandomAlphanumericString(5),generateRandomAlphanumericString(4),"Doe",29))
+    }
+
+
+    fun addEmployee(employee: Employee){
+        viewModelScope.launch {
+            saveEmployeeUseCase(employee)
+        }
     }
 
 
     fun deleteEmployee(employeeId:Long){
-        _employeeList.value.filterNot {it.employeeId==employeeId}
+        //_employeeList.value.filterNot {it.employeeId==employeeId}
     }
 
     fun deleteAllEmployees(){
-        _employeeList.value = mutableListOf<Employee>()
+        //_employeeList.value = mutableListOf<Employee>()
     }
 
-    fun generateRandomAlphanumericString(length: Int): String {
-        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-        return CharArray(length) { allowedChars.random(Random.Default) }.concatToString()
-    }
+//    fun generateRandomAlphanumericString(length: Int): String {
+////        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+////        return CharArray(length) { allowedChars.random(Random.Default) }.concatToString()
+//    }
 
-    fun generateId(): Long {
-        return _employeeList.value.last().employeeId+1
-    }
+//    fun generateId(): Long {
+////        return _employeeList.value.last().employeeId+1
+//    }
 }

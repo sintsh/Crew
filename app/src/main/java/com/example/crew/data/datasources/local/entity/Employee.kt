@@ -2,6 +2,7 @@ package com.example.crew.data.datasources.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.crew.domain.entities.EmployeeDE
 
 @Entity(tableName = "employees")
 data class Employee(
@@ -12,3 +13,7 @@ data class Employee(
     val age:Int,
 
     )
+
+
+fun Employee.toEmployeeDE() =
+    EmployeeDE(employeeId,username, name, lastName, age)

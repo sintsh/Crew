@@ -6,7 +6,9 @@ import androidx.navigation.NavController
 import com.example.crew.R
 import androidx.navigation.fragment.NavHostFragment
 import com.example.crew.app.ui.viewmodels.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CrewMainActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
