@@ -6,4 +6,36 @@
         <item name="android:textStyle">bold|italic</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
+
+    <style name="CustomEditTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColorHint">@color/my_hint_color</item>
+        <item name="android:textColor">@color/my_text_color</item>
+        <item name="boxStrokeColor">@color/my_stroke_color</item>
+        <item name="boxBackgroundColor">@color/edit_text_background</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+    </style>
+
+    <style name="CustomButtonStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColor">@color/button_text_color</item>
+        <item name="backgroundTint">@color/button_background_tint</item>
+        <item name="rippleColor">@color/button_ripple_color</item>
+        <item name="strokeColor">@color/button_stroke_color</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+    </style>
+
+
+    <style name="CustomSaveButtonStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColor">@color/button_text_color</item>
+        <item name="backgroundTint">@color/save_button_background_tint</item>
+        <item name="rippleColor">@color/button_ripple_color</item>
+        <item name="strokeColor">@color/button_stroke_color</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+    </style>
 </resources>

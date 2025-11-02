@@ -7,4 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="edit_text_background">#dd412c77</color>
+    <color name="my_hint_color">#F1fdddd1</color>
+    <color name="my_text_color">#ffdfdfdf</color>
+    <color name="my_stroke_color">#FFa991F1</color>
+    <color name="button_text_color">#FFffffff</color>
+    <color name="button_background_tint">#22aaaaaa</color>
+    <color name="save_button_background_tint">#ff333111</color>
+    <color name="button_ripple_color">#FF000000</color>
+    <color name="button_stroke_color">#FFa991F1</color>
 </resources>
