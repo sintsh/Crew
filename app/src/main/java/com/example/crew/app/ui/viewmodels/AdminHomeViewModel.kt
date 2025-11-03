@@ -4,29 +4,38 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crew.data.datasources.local.entity.Employee
+import com.example.crew.data.datasources.local.entity.toEmployeeDE
 import com.example.crew.domain.entities.EmployeeDE
 import com.example.crew.domain.usecases.DeleteAllEmployeesUseCase
 import com.example.crew.domain.usecases.DeleteEmployeeUseCase
 import com.example.crew.domain.usecases.GetEmployeesUseCase
 import com.example.crew.domain.usecases.SaveEmployeeUseCase
+import com.example.crew.domain.usecases.SearchEmployeeUseCase
 import com.example.crew.domain.usecases.UpdateEmployeeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class AdminHomeViewModel @Inject constructor(
     private val getEmployeesUseCase: GetEmployeesUseCase,
     private val saveEmployeeUseCase: SaveEmployeeUseCase,
     private val deleteEmployeeUseCase: DeleteEmployeeUseCase,
     private val deleteAllEmployeesUseCase: DeleteAllEmployeesUseCase,
-    private val updateEmployeeUseCase: UpdateEmployeeUseCase
+    private val updateEmployeeUseCase: UpdateEmployeeUseCase,
+    private val searchEmployeeUseCase: SearchEmployeeUseCase
 ) : ViewModel() {
 
     private val _limit = MutableStateFlow(6)
@@ -37,7 +46,8 @@ class AdminHomeViewModel @Inject constructor(
     private val _maxEmployeeCount = MutableStateFlow(0)
     val maxEmployeeCount = _maxEmployeeCount.asStateFlow()
 
-
+    private val _searchQueries = MutableStateFlow("")
+    val searchQueries = _searchQueries.asStateFlow()
 
     val hasNextPage: Flow<Boolean> =
         combine(offset, limit, maxEmployeeCount) { currentOffset, currentLimit, maxCount ->
@@ -49,23 +59,34 @@ class AdminHomeViewModel @Inject constructor(
     }
 
     private val dataUpdateTrigger = MutableStateFlow(0)
-    val employeeList: Flow<List<EmployeeDE>> = combine(
+    var employeeList: Flow<List<EmployeeDE>> = combine(
         offset,
         limit,
-        dataUpdateTrigger
-    ) { currentOffset, currentLimit, _ ->
+        _searchQueries.debounce(600),
+        dataUpdateTrigger,
+    ) { currentOffset, currentLimit, searchQueries,_ ->
         Pair(currentOffset, currentLimit)
     }.flatMapLatest { (currentOffset, currentLimit) ->
         val dbOffset = currentOffset * currentLimit
-        getEmployeesUseCase(currentLimit, dbOffset)
+        if (_searchQueries.value.isNotBlank()){
+            searchEmployeeUseCase(_searchQueries.value).map {
+                it
+            }
+        }else{
+            getEmployeesUseCase(currentLimit, dbOffset)
+        }
     }
-
 
     init {
         fetchEmployeeCount()
     }
 
 
+
+
+    fun setQuery(query:String){
+        _searchQueries.value = query
+    }
 
     fun onNextPage() {
         val canMove = ((_offset.value + 1) * _limit.value) < _maxEmployeeCount.value

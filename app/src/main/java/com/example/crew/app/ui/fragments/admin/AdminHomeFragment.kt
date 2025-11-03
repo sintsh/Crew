@@ -2,12 +2,13 @@ package com.example.crew.app.ui.fragments.admin
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -61,10 +62,29 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
                 hideKeyboard(binding.searching)
                 View.INVISIBLE
             }
-
-
-
         }
+
+        binding.searching.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {}
+
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                viewModel.setQuery(s.toString())
+            }
+
+        })
+
 
         adminArgs.employeeFromDialog?.let { employeeDE ->
             when(adminArgs.actionType){
@@ -120,6 +140,7 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
     private fun observeViewModelState() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+
                 launch {
                     viewModel.employeeList.collectLatest { employees ->
                         employeeAdapter.submitList(employees)

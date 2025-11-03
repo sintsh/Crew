@@ -12,7 +12,7 @@ interface EmployeeDao {
     @Insert
     suspend fun insertEmployee(employee: Employee): Long
 
-    @Query("SELECT * FROM employees  LIMIT :limit OFFSET :offset")
+    @Query("SELECT *, (SELECT COUNT(*) FROM employees) as employeeCount FROM employees  LIMIT :limit OFFSET :offset")
     fun getAllEmployees(limit:Int, offset:Int): Flow<List<Employee>>
 
     @Transaction
@@ -34,4 +34,7 @@ interface EmployeeDao {
     @Query("UPDATE employees SET username = :username, name = :name, lastname = :lastName, age = :age WHERE employeeId = :employeeId")
     suspend fun updateEmployee(employeeId: Long, username: String, name:String, lastName:String, age:Int)
 
+
+    @Query("SELECT * FROM employees WHERE username LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%' OR lastname LIKE '%' || :query || '%'")
+    fun searchEmployeeByQuery(query:String): Flow<List<Employee>>
 }

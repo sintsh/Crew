@@ -3,10 +3,12 @@ package com.example.crew.data.repositories
 import android.util.Log
 import com.example.crew.data.datasources.local.dao.EmployeeDao
 import com.example.crew.data.datasources.local.entity.Employee
+import com.example.crew.data.datasources.local.entity.PagedEmployee
 import com.example.crew.data.datasources.local.entity.toEmployeeDE
 import com.example.crew.domain.entities.EmployeeDE
 import com.example.crew.domain.respositories.EmployeeRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -54,6 +56,17 @@ class EmployeeRepositoryImpl @Inject constructor(
         age: Int
     ) {
         return employeeDao.updateEmployee(employeeId, username, name, lastName, age)
+    }
+
+    override suspend fun searchEmployeeByQuery(
+        query: String,
+    ): Flow<List<EmployeeDE>> {
+        val emp =  employeeDao.searchEmployeeByQuery(query)
+            .map {
+            it.map{emp-> emp.toEmployeeDE()}
+        }
+
+        return emp
     }
 
 }

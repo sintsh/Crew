@@ -1,6 +1,7 @@
 package com.example.crew.domain.respositories
 
 import com.example.crew.data.datasources.local.entity.Employee
+import com.example.crew.data.datasources.local.entity.PagedEmployee
 import com.example.crew.domain.entities.EmployeeDE
 import kotlinx.coroutines.flow.Flow
 
@@ -17,4 +18,7 @@ interface EmployeeRepository {
     suspend fun getEmployeeCount(): Int
 
     suspend fun updateEmployee(employeeId:Long,username:String, name:String, lastName:String, age:Int)
+
+    suspend fun searchEmployeeByQuery(query:String): Flow<List<EmployeeDE>>
+
 }
