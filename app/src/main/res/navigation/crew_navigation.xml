@@ -13,6 +13,11 @@
         <action
             android:id="@+id/action_adminHomeFragment_to_employeeActionDialogFragment"
             app:destination="@id/employeeActionDialogFragment" />
+        <argument
+            android:name="employeeFromDialog"
+            app:argType="com.example.crew.domain.entities.EmployeeDE"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -33,7 +38,8 @@
             app:destination="@id/adminHomeFragment" />
         <argument
             android:name="employee"
-            app:argType="com.example.crew.domain.entities.EmployeeDE" />
+            app:argType="com.example.crew.domain.entities.EmployeeDE"
+            app:nullable="true" />
         <argument
             android:name="action_type"
             app:argType="com.example.crew.app.ui.helpers.admin.ActionType" />

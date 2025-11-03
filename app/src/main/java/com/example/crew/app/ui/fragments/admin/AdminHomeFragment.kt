@@ -1,26 +1,25 @@
 package com.example.crew.app.ui.fragments.admin
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.crew.R
 import com.example.crew.app.ui.adapters.EmployeeListRecyclerAdapter
 import com.example.crew.app.ui.helpers.admin.ActionType
 import com.example.crew.app.ui.viewmodels.AdminHomeViewModel
 import com.example.crew.data.datasources.local.entity.Employee
 import com.example.crew.databinding.FragmentAdminHomeBinding
-import com.example.crew.domain.entities.EmployeeDE
+import com.example.crew.domain.entities.toEmployee
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -31,65 +30,120 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
 
     private val viewModel: AdminHomeViewModel by viewModels()
 
-    private lateinit var recycler: RecyclerView
+    private lateinit var employeeAdapter: EmployeeListRecyclerAdapter
+
+    private val adminArgs : AdminHomeFragmentArgs by navArgs()
+
+    private var _binding: FragmentAdminHomeBinding? = null
+    private val binding get() = _binding!!
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentAdminHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentAdminHomeBinding.inflate(inflater, container, false)
 
-        recycler = binding.recycler
-
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.employeeList.collectLatest { employees ->
-                    Log.i("BindingEMployees", "onBindViewHolder: \n${employees}")
-
-                    val adapter = EmployeeListRecyclerAdapter(
-                        employees
-                    ){click->
-                        when(click){
-                            is EmployeeListRecyclerAdapter.EmployeeClickable.DeleteClick -> {
-                                viewModel.deleteEmployee(click.employeeId)
-                                Snackbar.make(requireContext(),binding.root, "Delete Functionality is not yet implemented",
-                                    Snackbar.LENGTH_SHORT).show()
-                            }
-                            is EmployeeListRecyclerAdapter.EmployeeClickable.EditClick -> {
-                                navigateToEditPage(click.employeeId)
-                            }
-                        }
-                    }
-                    recycler.layoutManager = LinearLayoutManager(requireContext())
-                    recycler.adapter = adapter
-                }
-            }
+        adminArgs.employeeFromDialog?.let { employeeDE ->
+            viewModel.addEmployee(employeeDE.toEmployee())
         }
-
-
-        binding.createButton.setOnClickListener {
-            viewModel.addEmployee(Employee(username = "random",name = "random", lastName = "random", age = 26))
-            Snackbar.make(requireContext(),binding.root, "Added employees",
-                Snackbar.LENGTH_SHORT).show()
-        }
-
-        binding.deleteAllButton.setOnClickListener { viewModel.deleteAllEmployees() }
 
     return binding.root
     }
 
 
-    private fun navigateToEditPage(employeeId:Long){
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
+        setupClickListeners()
+        observeViewModelState()
+    }
+
+
+    private fun setupRecyclerView() {
+        employeeAdapter = EmployeeListRecyclerAdapter{ click ->
+            when (click) {
+                is EmployeeListRecyclerAdapter.EmployeeClickable.DeleteClick -> {
+                    viewModel.deleteEmployee(click.employeeId)
+                    Snackbar.make(requireContext(), binding.root, "Delete functionality is not yet implemented", Snackbar.LENGTH_SHORT).show()
+                }
+                is EmployeeListRecyclerAdapter.EmployeeClickable.EditClick -> {
+                    navigateToEditPage(click.employeeId)
+                }
+            }
+        }
+
+        binding.recycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = employeeAdapter
+        }
+    }
+
+    private fun observeViewModelState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            val employee = viewModel.getEmployeeById(employeeId).collectLatest { employeeDE ->
-                val nav = findNavController()
-                val direction = AdminHomeFragmentDirections.actionAdminHomeFragmentToEmployeeActionDialogFragment(employeeDE,
-                    ActionType.EDIT)
-                nav.navigate(direction)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.employeeList.collectLatest { employees ->
+                        employeeAdapter.submitList(employees)
+                    }
+                }
+
+                launch {
+                    viewModel.offset.collectLatest { pageIndex ->
+                        binding.page.text = "Page ${pageIndex + 1}"
+                    }
+                }
+
+                launch {
+                    viewModel.hasNextPage.collectLatest { hasNext ->
+                        binding.next.isVisible = hasNext
+                    }
+                }
+
+                launch {
+                    viewModel.hasPreviousPage.collectLatest { hasPrevious ->
+                        binding.back.isVisible = hasPrevious
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupClickListeners() {
+        binding.back.setOnClickListener {
+            viewModel.onPreviousPage()
+        }
+
+        binding.next.setOnClickListener {
+            viewModel.onNextPage()
+        }
+
+        binding.createButton.setOnClickListener {
+            viewModel.addEmployee(Employee(username = "random", name = "random", lastName = "random", age = 26))
+            val nav = findNavController()
+            val  direction = AdminHomeFragmentDirections.actionAdminHomeFragmentToEmployeeActionDialogFragment(null, actionType = ActionType.CREATE)
+            nav.navigate(direction)
+        }
+
+        binding.deleteAllButton.setOnClickListener { viewModel.deleteAllEmployees() }
+    }
+
+
+    private fun navigateToEditPage(employeeId: Long) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.getEmployeeById(employeeId).collectLatest {
+                val direction = AdminHomeFragmentDirections.actionAdminHomeFragmentToEmployeeActionDialogFragment(
+                    it,
+                    ActionType.EDIT
+                )
+                findNavController().navigate(direction)
             }
 
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

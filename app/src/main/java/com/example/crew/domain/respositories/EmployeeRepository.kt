@@ -5,7 +5,7 @@ import com.example.crew.domain.entities.EmployeeDE
 import kotlinx.coroutines.flow.Flow
 
 interface EmployeeRepository {
-    suspend fun getAllEmployees(): Flow<List<EmployeeDE>>
+    suspend fun getAllEmployees(limit:Int, offset: Int): Flow<List<EmployeeDE>>
     suspend fun saveEmployee(employee: Employee)
 
     suspend fun deleteEmployee(employeeId: Long)
@@ -13,4 +13,6 @@ interface EmployeeRepository {
     suspend fun deleteAllEmployees()
 
     suspend fun getEmployeeById(employeeId: Long): Employee
+
+    suspend fun getEmployeeCount(): Int
 }

@@ -9,10 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.crew.R
 import com.example.crew.app.ui.helpers.admin.ActionType
 import com.example.crew.databinding.FragmentEmployeeActionDialogBinding
+import com.example.crew.domain.entities.EmployeeDE
 import com.google.android.material.textfield.TextInputEditText
 
 
@@ -37,15 +39,34 @@ private val employeeDialogArgs: EmployeeActionDialogFragmentArgs by navArgs()
 
         when(employeeDialogArgs.actionType){
             ActionType.EDIT -> {
-                usernameField.setText(employeeDialogArgs.employee.username)
+                employeeDialogArgs.employee?.let { emp->
+                    usernameField.setText(emp.username)
 
-                nameField.setText(employeeDialogArgs.employee.name)
+                    nameField.setText(emp.name)
 
-                lastNameField.setText(employeeDialogArgs.employee.lastName)
+                    lastNameField.setText(emp.lastName)
 
-                ageField.setText(employeeDialogArgs.employee.age.toString())
+                    ageField.setText(emp.toString())
+                }
             }
-            ActionType.CREATE -> TODO()
+            ActionType.CREATE -> {
+
+            }
+        }
+
+        binding.saveButton.setOnClickListener {
+            val username = binding.userName.text.toString()
+            val name = binding.name.text.toString()
+            val lastName = binding.lastName.text.toString()
+            val age = binding.age.text.toString().toIntOrNull()
+
+            if ((username.isNotEmpty())&&(name.isNotEmpty())&&(lastName.isNotEmpty())&&(age!=null)){
+                val nav = findNavController()
+                val direction = EmployeeActionDialogFragmentDirections.actionEmployeeActionDialogFragmentToAdminHomeFragment(
+                    EmployeeDE(username =  username, name = name, lastName = lastName, age = age))
+
+                nav.navigate(direction)
+            }
         }
 
     return binding.root

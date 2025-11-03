@@ -12,8 +12,8 @@ interface EmployeeDao {
     @Insert
     suspend fun insertEmployee(employee: Employee): Long
 
-    @Query("SELECT * FROM employees")
-    fun getAllEmployees(): Flow<List<Employee>>
+    @Query("SELECT * FROM employees  LIMIT :limit OFFSET :offset")
+    fun getAllEmployees(limit:Int, offset:Int): Flow<List<Employee>>
 
     @Transaction
     @Query("SELECT * FROM employees WHERE employeeId = :employeeId")
@@ -27,5 +27,8 @@ interface EmployeeDao {
 
     @Query("SELECT * FROM employees WHERE employeeId = :employeeId")
     suspend fun getEmployeeById(employeeId: Long): Employee
+
+    @Query("SELECT COUNT(*) FROM employees")
+    suspend fun getEmployeeCount():Int
 
 }

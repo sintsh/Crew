@@ -13,11 +13,11 @@ import javax.inject.Inject
 class EmployeeRepositoryImpl @Inject constructor(
     private val employeeDao: EmployeeDao
 ): EmployeeRepository {
-    override suspend fun getAllEmployees(): Flow<List<EmployeeDE>> {
+    override suspend fun getAllEmployees(limit:Int, offset:Int): Flow<List<EmployeeDE>> {
         val employeeDe = mutableListOf<EmployeeDE>()
         Log.i("Crewhere", ": going to dao")
 
-        return employeeDao.getAllEmployees().map { employees ->
+        return employeeDao.getAllEmployees(limit, offset).map { employees ->
             Log.i("Crewhere", ": gotten from dao $employees")
 
             employees.map { employee ->
@@ -40,6 +40,10 @@ class EmployeeRepositoryImpl @Inject constructor(
 
     override suspend fun getEmployeeById(employeeId: Long): Employee {
         return employeeDao.getEmployeeById(employeeId)
+    }
+
+    override suspend fun getEmployeeCount(): Int {
+        return employeeDao.getEmployeeCount()
     }
 
 }

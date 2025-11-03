@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,28 +27,70 @@ class AdminHomeViewModel @Inject constructor(
     private val deleteAllEmployeesUseCase: DeleteAllEmployeesUseCase
 ) : ViewModel() {
 
-    private var _employeeList = MutableStateFlow<List<EmployeeDE>>(listOf())
+    private val _limit = MutableStateFlow(6)
+    val limit = _limit.asStateFlow()
 
-    val employeeList = _employeeList.asStateFlow()
+    private val _offset = MutableStateFlow(0)
+    val offset = _offset.asStateFlow()
+    private val _maxEmployeeCount = MutableStateFlow(0)
+    val maxEmployeeCount = _maxEmployeeCount.asStateFlow()
+
+
+
+    val hasNextPage: Flow<Boolean> =
+        combine(offset, limit, maxEmployeeCount) { currentOffset, currentLimit, maxCount ->
+            (currentOffset + 1) * currentLimit < maxCount
+        }
+
+    val hasPreviousPage: Flow<Boolean> = offset.combine(limit) { currentOffset, _ ->
+        currentOffset > 0
+    }
+
+    val employeeList: Flow<List<EmployeeDE>> = combine(offset, limit) { currentOffset, currentLimit ->
+        Pair(currentOffset, currentLimit)
+    }.flatMapLatest { (currentOffset, currentLimit) ->
+        val dbOffset = currentOffset * currentLimit
+        getEmployeesUseCase(currentLimit, dbOffset)
+    }
 
 
     init {
-        Log.i("Crewhere", ": initialized")
-        viewModelScope.launch {
-            getEmployeesUseCase().collectLatest { employees->
-                Log.i("Crewhere", ": gotten $employees")
+        fetchEmployeeCount()
+    }
 
-                _employeeList.value = employees
-            }
+
+
+    fun onNextPage() {
+        val canMove = ((_offset.value + 1) * _limit.value) < _maxEmployeeCount.value
+        if (canMove) {
+            _offset.value++
         }
     }
 
+    fun onPreviousPage() {
+        if (_offset.value > 0) {
+            _offset.value--
+        }
+    }
+
+    fun changeLimit(newLimit: Int) {
+        _limit.value = newLimit
+        _offset.value = 0
+    }
+
+    private fun fetchEmployeeCount() {
+        viewModelScope.launch {
+            _maxEmployeeCount.value = getEmployeesUseCase.getEmployeeCount()
+        }
+    }
 
     fun addEmployee(employee: Employee){
         viewModelScope.launch {
             saveEmployeeUseCase(employee)
         }
     }
+
+
 
 
     fun deleteEmployee(employeeId:Long){
