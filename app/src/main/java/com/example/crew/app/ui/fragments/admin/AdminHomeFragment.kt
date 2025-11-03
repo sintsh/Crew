@@ -17,7 +17,6 @@ import com.example.crew.R
 import com.example.crew.app.ui.adapters.EmployeeListRecyclerAdapter
 import com.example.crew.app.ui.helpers.admin.ActionType
 import com.example.crew.app.ui.viewmodels.AdminHomeViewModel
-import com.example.crew.data.datasources.local.entity.Employee
 import com.example.crew.databinding.FragmentAdminHomeBinding
 import com.example.crew.domain.entities.toEmployee
 import com.google.android.material.snackbar.Snackbar
@@ -65,7 +64,6 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
             when (click) {
                 is EmployeeListRecyclerAdapter.EmployeeClickable.DeleteClick -> {
                     viewModel.deleteEmployee(click.employeeId)
-                    Snackbar.make(requireContext(), binding.root, "Delete functionality is not yet implemented", Snackbar.LENGTH_SHORT).show()
                 }
                 is EmployeeListRecyclerAdapter.EmployeeClickable.EditClick -> {
                     navigateToEditPage(click.employeeId)
@@ -119,7 +117,6 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
         }
 
         binding.createButton.setOnClickListener {
-            viewModel.addEmployee(Employee(username = "random", name = "random", lastName = "random", age = 26))
             val nav = findNavController()
             val  direction = AdminHomeFragmentDirections.actionAdminHomeFragmentToEmployeeActionDialogFragment(null, actionType = ActionType.CREATE)
             nav.navigate(direction)

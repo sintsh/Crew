@@ -46,7 +46,12 @@ class AdminHomeViewModel @Inject constructor(
         currentOffset > 0
     }
 
-    val employeeList: Flow<List<EmployeeDE>> = combine(offset, limit) { currentOffset, currentLimit ->
+    private val dataUpdateTrigger = MutableStateFlow(0)
+    val employeeList: Flow<List<EmployeeDE>> = combine(
+        offset,
+        limit,
+        dataUpdateTrigger
+    ) { currentOffset, currentLimit, _ ->
         Pair(currentOffset, currentLimit)
     }.flatMapLatest { (currentOffset, currentLimit) ->
         val dbOffset = currentOffset * currentLimit
@@ -87,6 +92,7 @@ class AdminHomeViewModel @Inject constructor(
     fun addEmployee(employee: Employee){
         viewModelScope.launch {
             saveEmployeeUseCase(employee)
+            fetchEmployeeCount()
         }
     }
 
@@ -96,26 +102,19 @@ class AdminHomeViewModel @Inject constructor(
     fun deleteEmployee(employeeId:Long){
         viewModelScope.launch {
             deleteEmployeeUseCase(employeeId)
+            fetchEmployeeCount()
         }
+
     }
 
     fun deleteAllEmployees(){
         viewModelScope.launch {
             deleteAllEmployeesUseCase()
+            fetchEmployeeCount()
         }
     }
-
 
     suspend fun getEmployeeById(employeeId: Long): Flow<EmployeeDE>{
             return getEmployeesUseCase.getById(employeeId)
     }
-
-//    fun generateRandomAlphanumericString(length: Int): String {
-////        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-////        return CharArray(length) { allowedChars.random(Random.Default) }.concatToString()
-//    }
-
-//    fun generateId(): Long {
-////        return _employeeList.value.last().employeeId+1
-//    }
 }
