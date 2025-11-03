@@ -1,10 +1,15 @@
 package com.example.crew.app.ui.fragments.admin
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -42,6 +47,24 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAdminHomeBinding.inflate(inflater, container, false)
+
+
+        binding.searchBtn.setOnClickListener {
+            binding.searching.visibility = if(!(binding.searching.isVisible)){
+                activity?.let {
+                    WindowCompat.getInsetsController(it.window, binding.searching).show(WindowInsetsCompat.Type.ime())
+                }
+                binding.searching.requestFocus()
+
+                View.VISIBLE
+            } else{
+                hideKeyboard(binding.searching)
+                View.INVISIBLE
+            }
+
+
+
+        }
 
         adminArgs.employeeFromDialog?.let { employeeDE ->
             when(adminArgs.actionType){
@@ -111,13 +134,13 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
 
                 launch {
                     viewModel.hasNextPage.collectLatest { hasNext ->
-                        binding.next.isVisible = hasNext
+                        binding.next.visibility = if(hasNext) View.VISIBLE else View.INVISIBLE
                     }
                 }
 
                 launch {
                     viewModel.hasPreviousPage.collectLatest { hasPrevious ->
-                        binding.back.isVisible = hasPrevious
+                        binding.back.visibility = if(hasPrevious) View.VISIBLE else View.INVISIBLE
                     }
                 }
             }
@@ -157,8 +180,15 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
         }
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    private fun hideKeyboard(view: View) {
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
