@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class EmployeeDE(
-    val employeeId: Long = 0,
+    val employeeId: Long? = 0,
     val username: String,
     val name:String,
     val lastName:String,

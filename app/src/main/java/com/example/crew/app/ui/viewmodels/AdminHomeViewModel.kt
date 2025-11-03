@@ -9,6 +9,7 @@ import com.example.crew.domain.usecases.DeleteAllEmployeesUseCase
 import com.example.crew.domain.usecases.DeleteEmployeeUseCase
 import com.example.crew.domain.usecases.GetEmployeesUseCase
 import com.example.crew.domain.usecases.SaveEmployeeUseCase
+import com.example.crew.domain.usecases.UpdateEmployeeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +25,8 @@ class AdminHomeViewModel @Inject constructor(
     private val getEmployeesUseCase: GetEmployeesUseCase,
     private val saveEmployeeUseCase: SaveEmployeeUseCase,
     private val deleteEmployeeUseCase: DeleteEmployeeUseCase,
-    private val deleteAllEmployeesUseCase: DeleteAllEmployeesUseCase
+    private val deleteAllEmployeesUseCase: DeleteAllEmployeesUseCase,
+    private val updateEmployeeUseCase: UpdateEmployeeUseCase
 ) : ViewModel() {
 
     private val _limit = MutableStateFlow(6)
@@ -93,6 +95,12 @@ class AdminHomeViewModel @Inject constructor(
         viewModelScope.launch {
             saveEmployeeUseCase(employee)
             fetchEmployeeCount()
+        }
+    }
+
+    fun updateEmployee(employeeId: Long,username:String, name:String, lastName:String, age:Int){
+        viewModelScope.launch {
+            updateEmployeeUseCase(employeeId,username, name, lastName, age)
         }
     }
 

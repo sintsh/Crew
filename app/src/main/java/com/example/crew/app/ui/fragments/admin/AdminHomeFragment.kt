@@ -1,6 +1,7 @@
 package com.example.crew.app.ui.fragments.admin
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,6 @@ import com.example.crew.app.ui.helpers.admin.ActionType
 import com.example.crew.app.ui.viewmodels.AdminHomeViewModel
 import com.example.crew.databinding.FragmentAdminHomeBinding
 import com.example.crew.domain.entities.toEmployee
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -44,7 +44,24 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
         _binding = FragmentAdminHomeBinding.inflate(inflater, container, false)
 
         adminArgs.employeeFromDialog?.let { employeeDE ->
-            viewModel.addEmployee(employeeDE.toEmployee())
+            when(adminArgs.actionType){
+                ActionType.EDIT -> {
+                    Log.i("checkoutEmployeeData", "emp : $employeeDE")
+                    employeeDE.employeeId?.let {
+                        viewModel.updateEmployee(
+                            employeeDE.employeeId,
+                            employeeDE.username,
+                            employeeDE.name,
+                            employeeDE.lastName,
+                            employeeDE.age
+                        )
+                    }
+                }
+                ActionType.CREATE -> {
+                    viewModel.addEmployee(employeeDE.toEmployee())
+                }
+                ActionType.NULL -> {}
+            }
         }
 
     return binding.root
@@ -129,6 +146,7 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
     private fun navigateToEditPage(employeeId: Long) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.getEmployeeById(employeeId).collectLatest {
+                Log.i("checkoutEmployeeData", "navigateToEditPage: \n $it")
                 val direction = AdminHomeFragmentDirections.actionAdminHomeFragmentToEmployeeActionDialogFragment(
                     it,
                     ActionType.EDIT

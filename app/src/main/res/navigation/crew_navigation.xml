@@ -18,6 +18,9 @@
             app:argType="com.example.crew.domain.entities.EmployeeDE"
             app:nullable="true"
             android:defaultValue="@null" />
+        <argument
+            android:name="actionType"
+            app:argType="com.example.crew.app.ui.helpers.admin.ActionType" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"

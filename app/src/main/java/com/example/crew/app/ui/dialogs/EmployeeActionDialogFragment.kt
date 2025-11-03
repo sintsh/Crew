@@ -3,6 +3,7 @@ package com.example.crew.app.ui.dialogs
 import android.content.res.Resources
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -46,15 +47,18 @@ private val employeeDialogArgs: EmployeeActionDialogFragmentArgs by navArgs()
 
                     lastNameField.setText(emp.lastName)
 
-                    ageField.setText(emp.toString())
+                    ageField.setText(emp.age.toString())
                 }
             }
             ActionType.CREATE -> {
 
             }
+
+            ActionType.NULL -> {}
         }
 
         binding.saveButton.setOnClickListener {
+            Log.i("Dialog employee", "onCreateView: save button")
             val username = binding.userName.text.toString()
             val name = binding.name.text.toString()
             val lastName = binding.lastName.text.toString()
@@ -63,7 +67,7 @@ private val employeeDialogArgs: EmployeeActionDialogFragmentArgs by navArgs()
             if ((username.isNotEmpty())&&(name.isNotEmpty())&&(lastName.isNotEmpty())&&(age!=null)){
                 val nav = findNavController()
                 val direction = EmployeeActionDialogFragmentDirections.actionEmployeeActionDialogFragmentToAdminHomeFragment(
-                    EmployeeDE(username =  username, name = name, lastName = lastName, age = age))
+                    employeeFromDialog = EmployeeDE(employeeId = employeeDialogArgs.employee?.employeeId, username =  username, name = name, lastName = lastName, age = age), actionType = employeeDialogArgs.actionType)
 
                 nav.navigate(direction)
             }

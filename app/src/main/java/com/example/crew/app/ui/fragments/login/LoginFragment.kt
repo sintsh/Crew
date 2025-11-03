@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.crew.R
+import com.example.crew.app.ui.helpers.admin.ActionType
 import com.example.crew.app.ui.helpers.login.LoggedInUserView
 import com.example.crew.app.ui.viewmodels.LoginViewModel
 import com.example.crew.app.ui.viewmodels.LoginViewModelFactory
@@ -68,7 +69,8 @@ class LoginFragment : Fragment(R.layout.login_layout) {
             }
             if (loginResult.success != null) {
                 val nav = findNavController()
-                val direction = LoginFragmentDirections.actionLoginFragment2ToAdminHomeFragment()
+                val direction = LoginFragmentDirections.actionLoginFragment2ToAdminHomeFragment(
+                    actionType = ActionType.NULL)
                 nav.navigate(direction)
                 updateUiWithUser(loginResult.success)
             }

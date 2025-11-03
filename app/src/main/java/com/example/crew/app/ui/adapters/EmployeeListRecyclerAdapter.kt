@@ -37,11 +37,15 @@ class EmployeeListRecyclerAdapter(
             lastName.text = employee.lastName
 
             editButton.setOnClickListener {
-                onClick(EmployeeClickable.EditClick(employee.employeeId))
+                employee.employeeId?.let {
+                    onClick(EmployeeClickable.EditClick(it))
+                }
             }
 
             deleteButton.setOnClickListener {
-                onClick(EmployeeClickable.DeleteClick(employee.employeeId))
+                employee.employeeId?.let {
+                    onClick(EmployeeClickable.DeleteClick(it))
+                }
             }
         }
     }

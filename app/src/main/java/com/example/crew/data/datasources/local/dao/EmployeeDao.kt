@@ -31,4 +31,7 @@ interface EmployeeDao {
     @Query("SELECT COUNT(*) FROM employees")
     suspend fun getEmployeeCount():Int
 
+    @Query("UPDATE employees SET username = :username, name = :name, lastname = :lastName, age = :age WHERE employeeId = :employeeId")
+    suspend fun updateEmployee(employeeId: Long, username: String, name:String, lastName:String, age:Int)
+
 }

@@ -15,4 +15,6 @@ interface EmployeeRepository {
     suspend fun getEmployeeById(employeeId: Long): Employee
 
     suspend fun getEmployeeCount(): Int
+
+    suspend fun updateEmployee(employeeId:Long,username:String, name:String, lastName:String, age:Int)
 }

@@ -46,4 +46,14 @@ class EmployeeRepositoryImpl @Inject constructor(
         return employeeDao.getEmployeeCount()
     }
 
+    override suspend fun updateEmployee(
+        employeeId: Long,
+        username: String,
+        name: String,
+        lastName: String,
+        age: Int
+    ) {
+        return employeeDao.updateEmployee(employeeId, username, name, lastName, age)
+    }
+
 }
