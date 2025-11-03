@@ -29,12 +29,18 @@ class EmployeeListRecyclerAdapter(
     class EmployeeListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val firstName: TextView = itemView.findViewById(R.id.first_name)
         private val lastName: TextView = itemView.findViewById(R.id.last_name)
+
+        private val age: TextView = itemView.findViewById(R.id.age)
+
+        private val userName: TextView = itemView.findViewById(R.id.user_name)
         private val editButton: ImageView = itemView.findViewById(R.id.edit_button)
         private val deleteButton: ImageView = itemView.findViewById(R.id.delete_button)
 
         fun bind(employee: EmployeeDE, onClick: (EmployeeClickable) -> Unit) {
             firstName.text = employee.name
             lastName.text = employee.lastName
+            age.text = employee.age.toString()
+            userName.text = employee.username
 
             editButton.setOnClickListener {
                 employee.employeeId?.let {

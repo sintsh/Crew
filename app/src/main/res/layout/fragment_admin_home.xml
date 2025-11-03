@@ -31,15 +31,17 @@
     </LinearLayout>
     <RelativeLayout
         android:id="@+id/move_icons"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/spinner"
         app:layout_constraintBottom_toTopOf="@id/recycler"
         >
         <ImageView
             android:id="@+id/back"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/right"
             android:rotation="180"
             app:tint="@color/white"
@@ -55,13 +57,21 @@
             />
         <ImageView
             android:id="@+id/next"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/right"
             app:tint="@color/white"
             android:layout_alignParentEnd="true"
             />
     </RelativeLayout>
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/move_icons"
+        app:layout_constraintBottom_toBottomOf="@id/move_icons"
+        />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"

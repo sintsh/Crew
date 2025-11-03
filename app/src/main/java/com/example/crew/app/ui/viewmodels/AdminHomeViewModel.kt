@@ -91,7 +91,7 @@ class AdminHomeViewModel @Inject constructor(
         }
     }
 
-    fun addEmployee(employee: Employee){
+    fun addEmployee(employee: Employee= Employee(username = "test", name = "test", lastName = "test", age = 20)){
         viewModelScope.launch {
             saveEmployeeUseCase(employee)
             fetchEmployeeCount()
@@ -111,6 +111,12 @@ class AdminHomeViewModel @Inject constructor(
         viewModelScope.launch {
             deleteEmployeeUseCase(employeeId)
             fetchEmployeeCount()
+
+            if ((_maxEmployeeCount.value%_limit.value)==1){
+                if (_offset.value>0){
+                    _offset.value = _offset.value -1
+                }
+            }
         }
 
     }
@@ -120,6 +126,7 @@ class AdminHomeViewModel @Inject constructor(
             deleteAllEmployeesUseCase()
             fetchEmployeeCount()
         }
+        _offset.value = 0
     }
 
     suspend fun getEmployeeById(employeeId: Long): Flow<EmployeeDE>{

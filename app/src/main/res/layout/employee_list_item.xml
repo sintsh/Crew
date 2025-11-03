@@ -7,15 +7,117 @@
     android:layout_margin="10dp"
     android:background="@drawable/rounded_corner"
     >
-    <LinearLayout
-        android:id="@+id/attributes"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/profile_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2"
+        />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/button_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.82"
+        />
+    <RelativeLayout
+        android:id="@+id/profile"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/profile_end"
+        >
+        <ImageView
+            android:id="@+id/profile_pic"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@android:drawable/picture_frame"
+            android:layout_centerHorizontal="true"
+            />
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:maxWidth="80dp"
+            android:layout_height="wrap_content"
+            android:text="username"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/white"
+            android:padding="5dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_below="@id/profile_pic"
+            android:layout_centerHorizontal="true"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/attributes_label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/buttons"
+        app:layout_constraintStart_toStartOf="@id/profile_end"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="horizontal"
+        android:padding="5dp"
+        android:gravity="center"
+        >
+        <TextView
+            android:id="@+id/first_name_label"
+            android:layout_width="wrap_content"
+            android:maxWidth="80dp"
+            android:layout_height="wrap_content"
+            android:text="name"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="10dp"
+            android:padding="5dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            />
+        <TextView
+            android:id="@+id/last_name_label"
+            android:layout_width="wrap_content"
+            android:maxWidth="80dp"
+            android:layout_height="wrap_content"
+            android:text="last name"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="10dp"
+            android:padding="5dp"
+            android:layout_below="@id/first_name_label"
+            android:layout_gravity="center"
+            android:gravity="center"
+            />
+        <TextView
+            android:id="@+id/age_label"
+            android:layout_width="wrap_content"
+            android:maxWidth="80dp"
+            android:layout_height="wrap_content"
+            android:text="age"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="10dp"
+            android:padding="5dp"
+            android:layout_below="@id/last_name_label"
+            android:layout_gravity="center"
+            android:gravity="center"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/attributes_editable"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/attributes_label"
+        app:layout_constraintEnd_toStartOf="@id/button_start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="5dp"
         android:gravity="center"
         >
         <TextView
@@ -41,32 +143,35 @@
             android:text="last nameeeeeeeeeeeeeeee"
             android:layout_marginHorizontal="10dp"
             android:maxLines="1"
+            android:layout_below="@id/first_name"
             android:ellipsize="end"
             android:padding="5dp"
             />
         <TextView
-            android:id="@+id/department"
+            android:id="@+id/age"
             android:layout_width="wrap_content"
             android:maxWidth="80dp"
             android:layout_height="wrap_content"
-            android:text="departmentsdkjdkjsdksjkdsdsdsd"
+            android:text="age"
             android:layout_marginHorizontal="10dp"
             android:maxLines="1"
+            android:layout_below="@id/last_name"
             android:textColor="@color/white"
             android:ellipsize="end"
             android:padding="5dp"
             />
 
-    </LinearLayout>
+    </RelativeLayout>
     <LinearLayout
         android:id="@+id/buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/attributes"
+        app:layout_constraintStart_toEndOf="@id/attributes_editable"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:gravity="center"
+        android:orientation="vertical"
         >
         <ImageView
             android:id="@+id/edit_button"
@@ -81,7 +186,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:src="@drawable/delete"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
             android:layout_gravity="center"
             />
     </LinearLayout>
