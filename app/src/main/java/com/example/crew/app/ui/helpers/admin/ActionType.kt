@@ -1,5 +1,9 @@
 package com.example.crew.app.ui.helpers.admin
 
-enum class ActionType {
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+enum class ActionType: Parcelable {
     EDIT, CREATE, NULL
 }

@@ -212,4 +212,18 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
+
+
+    companion object {
+        private const val ARG_USER_TYPE = "actionType"
+
+        fun newInstance(userType: ActionType): AdminHomeFragment {
+            val fragment = AdminHomeFragment()
+            val args = Bundle().apply {
+                putParcelable(ARG_USER_TYPE, userType)
+            }
+            fragment.arguments = args
+            return fragment
+        }
+    }
 }

@@ -28,8 +28,8 @@
         android:label="login_layout"
         tools:layout="@layout/login_layout" >
         <action
-            android:id="@+id/action_loginFragment2_to_adminHomeFragment"
-            app:destination="@id/adminHomeFragment" />
+            android:id="@+id/action_loginFragment_to_adminMainFragment"
+            app:destination="@id/adminMainFragment" />
     </fragment>
     <dialog
         android:id="@+id/employeeActionDialogFragment"
@@ -47,4 +47,9 @@
             android:name="action_type"
             app:argType="com.example.crew.app.ui.helpers.admin.ActionType" />
     </dialog>
+    <fragment
+        android:id="@+id/adminMainFragment"
+        android:name="com.example.crew.app.ui.fragments.admin.AdminMainFragment"
+        android:label="fragment_admin_main"
+        tools:layout="@layout/fragment_admin_main" />
 </navigation>

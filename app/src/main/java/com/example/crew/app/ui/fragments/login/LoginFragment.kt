@@ -69,8 +69,8 @@ class LoginFragment : Fragment(R.layout.login_layout) {
             }
             if (loginResult.success != null) {
                 val nav = findNavController()
-                val direction = LoginFragmentDirections.actionLoginFragment2ToAdminHomeFragment(
-                    actionType = ActionType.NULL)
+                val direction = LoginFragmentDirections.actionLoginFragmentToAdminMainFragment()
+//                    actionType = ActionType.NULL)
                 nav.navigate(direction)
                 updateUiWithUser(loginResult.success)
             }
