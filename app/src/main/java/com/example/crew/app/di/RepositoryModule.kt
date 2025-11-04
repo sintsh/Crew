@@ -4,6 +4,7 @@ import com.example.crew.data.repositories.EmployeeRepositoryImpl
 import com.example.crew.data.repositories.EmployeeWithRolesRepositoryImpl
 import com.example.crew.data.repositories.RoleRepositoryImpl
 import com.example.crew.domain.respositories.EmployeeRepository
+import com.example.crew.domain.respositories.EmployeeRolesCrossRefRepository
 import com.example.crew.domain.respositories.RoleRepository
 import dagger.Binds
 import dagger.Module
@@ -20,5 +21,5 @@ abstract class RepositoryModule {
     abstract fun bindRoleRepository(impl: RoleRepositoryImpl): RoleRepository
 
     @Binds
-    abstract fun bindEmployeeWithRolesRepository(impl: EmployeeWithRolesRepositoryImpl): RoleRepository
+    abstract fun bindEmployeeWithRolesRepository(impl: EmployeeWithRolesRepositoryImpl): EmployeeRolesCrossRefRepository
 }
