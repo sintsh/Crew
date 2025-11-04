@@ -40,11 +40,14 @@ class RoleListRecyclerAdapter( private val onClick: (RoleClickable) -> Unit
 //            age.text = employee.age.toString()
 //            userName.text = employee.username
 
-//            editButton.setOnClickListener {
-//                employee.employeeId?.let {
-//                    onClick(EmployeeClickable.EditClick(it))
-//                }
-//            }
+            editButton.setOnClickListener {
+                role.roleId.let {
+                    onClick(RoleClickable.EditClick(RolesDE(
+                        roleId = role.roleId,
+                        roleName = role.roleName
+                    )))
+                }
+            }
 
 //            deleteButton.setOnClickListener {
 //                employee.employeeId?.let {
@@ -55,7 +58,7 @@ class RoleListRecyclerAdapter( private val onClick: (RoleClickable) -> Unit
     }
 
     sealed class RoleClickable {
-        data class EditClick(val roleId: Long) : RoleClickable()
+        data class EditClick(val role: RolesDE) : RoleClickable()
         data class DeleteClick(val roleId: Long) : RoleClickable()
     }
 

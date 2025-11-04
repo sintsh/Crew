@@ -1,5 +1,6 @@
 package com.example.crew.app.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crew.domain.entities.RolesDE
@@ -9,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
@@ -61,6 +63,11 @@ class AdminRolesViewModel @Inject constructor(
 
     init {
         fetchRoleCount()
+        viewModelScope.launch {
+            roles.collectLatest { rolesDES ->
+                Log.i("rolescheck", ": $rolesDES")
+            }
+        }
     }
 
     private fun fetchRoleCount() {

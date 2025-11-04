@@ -37,18 +37,22 @@
             android:id="@+id/action_adminMainFragment_to_employeeActionDialogFragment"
             app:launchSingleTop="true"
             app:destination="@id/employeeActionDialogFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/adminRolesFragment"
-        android:name="com.example.crew.app.ui.fragments.admin.AdminRolesFragment"
-        android:label="AdminRolesFragment" >
         <action
-            android:id="@+id/action_adminRolesFragment_to_roleDialogFragment"
+            android:id="@+id/action_adminMainFragment_to_roleDialogFragment"
             app:destination="@id/roleDialogFragment" />
     </fragment>
     <dialog
         android:id="@+id/roleDialogFragment"
         android:name="com.example.crew.app.ui.dialogs.RoleDialogFragment"
         android:label="fragment_role_dialog"
-        tools:layout="@layout/fragment_role_dialog" />
+        tools:layout="@layout/fragment_role_dialog" >
+        <argument
+            android:name="role"
+            app:argType="com.example.crew.domain.entities.RolesDE"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="action"
+            app:argType="com.example.crew.app.ui.helpers.admin.ActionType" />
+    </dialog>
 </navigation>
