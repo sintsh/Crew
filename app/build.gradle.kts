@@ -5,6 +5,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
+    id("androidx.room") version "2.8.3"
 }
 
 android {
@@ -76,4 +77,9 @@ dependencies {
 
     //room paging
     implementation(libs.androidx.room.paging)
+}
+
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }

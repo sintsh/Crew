@@ -1,5 +1,6 @@
 package com.example.crew.data.datasources.local.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.crew.data.datasources.local.dao.EmployeeDao
@@ -9,7 +10,11 @@ import com.example.crew.data.datasources.local.entity.Employee
 import com.example.crew.data.datasources.local.entity.EmployeeRoleCrossRef
 import com.example.crew.data.datasources.local.entity.Role
 
-@Database(entities = [Employee::class, Role::class, EmployeeRoleCrossRef::class], version = 1, exportSchema = false)
+@Database(
+    entities = [Employee::class, Role::class, EmployeeRoleCrossRef::class],
+    version = 1,
+    //autoMigrations = [AutoMigration(from = 1, to = 2)],
+    exportSchema = true)
 abstract class CrewDatabase: RoomDatabase(){
     abstract fun employeeDao(): EmployeeDao
     abstract fun roleDao(): RoleDao
