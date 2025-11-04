@@ -1,4 +1,4 @@
-package com.example.crew.domain.usecases
+package com.example.crew.domain.usecases.employee
 
 import com.example.crew.data.datasources.local.entity.toEmployeeDE
 import com.example.crew.domain.entities.EmployeeDE
@@ -15,7 +15,7 @@ class GetEmployeesUseCase @Inject constructor(
     }
 
 
-    suspend fun getById(employeeId: Long): Flow<EmployeeDE>{
+    suspend fun getById(employeeId: Long): Flow<EmployeeDE> {
         return flowOf(employeeRepository.getEmployeeById(employeeId).toEmployeeDE())
     }
 
