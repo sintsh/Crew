@@ -1,14 +1,18 @@
 package com.example.crew.app.ui.fragments.admin
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.crew.R
 import com.example.crew.app.ui.adapters.EmployeeViewPagerAdapter
 import com.example.crew.app.ui.helpers.admin.ActionType
 import com.example.crew.databinding.FragmentAdminMainBinding
+import com.example.crew.domain.entities.EmployeeWithAction
+import com.example.crew.domain.entities.toEmployee
 import com.google.android.material.tabs.TabLayoutMediator
 
 class AdminMainFragment : Fragment(R.layout.fragment_admin_main) {
@@ -36,6 +40,7 @@ class AdminMainFragment : Fragment(R.layout.fragment_admin_main) {
         TabLayoutMediator(bottomNavView, viewPager2){ tab, pos->
             tab.text = pageNameOptions[pos%3]
         }.attach()
+
 
         return binding.root
     }

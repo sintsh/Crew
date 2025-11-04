@@ -16,6 +16,7 @@ import com.example.crew.R
 import com.example.crew.app.ui.helpers.admin.ActionType
 import com.example.crew.databinding.FragmentEmployeeActionDialogBinding
 import com.example.crew.domain.entities.EmployeeDE
+import com.example.crew.domain.entities.EmployeeWithAction
 import com.google.android.material.textfield.TextInputEditText
 
 
@@ -65,13 +66,21 @@ private val employeeDialogArgs: EmployeeActionDialogFragmentArgs by navArgs()
             val age = binding.age.text.toString().toIntOrNull()
 
             if ((username.isNotEmpty())&&(name.isNotEmpty())&&(lastName.isNotEmpty())&&(age!=null)){
-                val nav = findNavController()
-                val direction = EmployeeActionDialogFragmentDirections.actionEmployeeActionDialogFragmentToAdminHomeFragment(
-                    employeeFromDialog = EmployeeDE(employeeId = employeeDialogArgs.employee?.employeeId, username =  username, name = name, lastName = lastName, age = age), actionType = employeeDialogArgs.actionType)
+                val employeeFromDialog = EmployeeDE(employeeId = employeeDialogArgs.employee?.employeeId, username =  username, name = name, lastName = lastName, age = age)
+                val action = employeeDialogArgs.actionType
+                val employeeWithAction = EmployeeWithAction(employeeFromDialog, action)
+                Log.i("checkthisout", "to be sent: data found \n\t $employeeWithAction")
 
-                nav.navigate(direction)
+                val nav = findNavController()
+                nav.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set("employee_with_action_result",employeeWithAction)
+                nav.navigateUp()
             }
         }
+
+
+        binding.cancelButton.setOnClickListener { findNavController().popBackStack() }
 
     return binding.root
     }

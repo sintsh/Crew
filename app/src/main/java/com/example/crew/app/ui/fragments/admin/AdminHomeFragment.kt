@@ -18,13 +18,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.crew.R
 import com.example.crew.app.ui.adapters.EmployeeListRecyclerAdapter
 import com.example.crew.app.ui.helpers.admin.ActionType
 import com.example.crew.app.ui.viewmodels.AdminHomeViewModel
 import com.example.crew.databinding.FragmentAdminHomeBinding
+import com.example.crew.domain.entities.EmployeeWithAction
 import com.example.crew.domain.entities.toEmployee
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -37,7 +37,6 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
 
     private lateinit var employeeAdapter: EmployeeListRecyclerAdapter
 
-    private val adminArgs : AdminHomeFragmentArgs by navArgs()
 
     private var _binding: FragmentAdminHomeBinding? = null
     private val binding get() = _binding!!
@@ -85,34 +84,35 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
 
         })
 
-
-        adminArgs.employeeFromDialog?.let { employeeDE ->
-            when(adminArgs.actionType){
-                ActionType.EDIT -> {
-                    Log.i("checkoutEmployeeData", "emp : $employeeDE")
-                    employeeDE.employeeId?.let {
-                        viewModel.updateEmployee(
-                            employeeDE.employeeId,
-                            employeeDE.username,
-                            employeeDE.name,
-                            employeeDE.lastName,
-                            employeeDE.age
-                        )
-                    }
-                }
-                ActionType.CREATE -> {
-                    viewModel.addEmployee(employeeDE.toEmployee())
-                }
-                ActionType.NULL -> {}
-            }
-        }
-
     return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        findNavController().currentBackStackEntry
+            ?.savedStateHandle
+            ?.getLiveData<EmployeeWithAction>("employee_with_action_result")
+            ?.observe(viewLifecycleOwner){ employeeWithAction ->
+                if (employeeWithAction.action == ActionType.CREATE){
+                    viewModel.addEmployee(employeeWithAction.employee.toEmployee())
+                }else if(employeeWithAction.action == ActionType.EDIT){
+                    employeeWithAction.employee.also { emp->
+                        emp.employeeId?.let { id->
+                            viewModel.updateEmployee(
+                                id,
+                                emp.username,
+                                emp.name,
+                                emp.lastName,
+                                emp.age
+                            )
+                        }
+                    }
+
+                }
+            }
+
         setupRecyclerView()
         setupClickListeners()
         observeViewModelState()
@@ -179,7 +179,7 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
 
         binding.createButton.setOnClickListener {
             val nav = findNavController()
-            val  direction = AdminHomeFragmentDirections.actionAdminHomeFragmentToEmployeeActionDialogFragment(null, actionType = ActionType.CREATE)
+            val  direction = AdminMainFragmentDirections.actionAdminMainFragmentToEmployeeActionDialogFragment(null, actionType = ActionType.CREATE)
             nav.navigate(direction)
         }
 
@@ -191,7 +191,7 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.getEmployeeById(employeeId).collectLatest {
                 Log.i("checkoutEmployeeData", "navigateToEditPage: \n $it")
-                val direction = AdminHomeFragmentDirections.actionAdminHomeFragmentToEmployeeActionDialogFragment(
+                val direction = AdminMainFragmentDirections.actionAdminMainFragmentToEmployeeActionDialogFragment(
                     it,
                     ActionType.EDIT
                 )
