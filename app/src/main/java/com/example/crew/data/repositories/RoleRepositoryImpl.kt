@@ -2,6 +2,7 @@ package com.example.crew.data.repositories
 
 import com.example.crew.data.datasources.local.dao.RoleDao
 import com.example.crew.data.datasources.local.entity.Role
+import com.example.crew.data.datasources.local.entity.toRole
 import com.example.crew.data.datasources.local.entity.toRoleDE
 import com.example.crew.domain.entities.RolesDE
 import com.example.crew.domain.respositories.RoleRepository
@@ -22,5 +23,13 @@ class RoleRepositoryImpl @Inject constructor(
 
     override suspend fun insertRole(rolesDE: RolesDE): Long {
         return roleDao.insertRole(Role(roleName = rolesDE.roleName))
+    }
+
+    override suspend fun deleteRole(rolesDE: RolesDE) {
+        roleDao.deleteRole(rolesDE.toRole())
+    }
+
+    override suspend fun getRoleById(roleId: Long): RolesDE {
+        return roleDao.getRoleById(roleId).toRoleDE()
     }
 }

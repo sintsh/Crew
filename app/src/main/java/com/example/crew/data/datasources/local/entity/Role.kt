@@ -11,3 +11,5 @@ data class Role (
 )
 
 fun Role.toRoleDE() = RolesDE(roleId, roleName)
+
+fun RolesDE.toRole() = Role(this.roleId, this.roleName)

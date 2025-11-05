@@ -49,17 +49,15 @@ class RoleListRecyclerAdapter( private val onClick: (RoleClickable) -> Unit
                 }
             }
 
-//            deleteButton.setOnClickListener {
-//                employee.employeeId?.let {
-//                    onClick(EmployeeClickable.DeleteClick(it))
-//                }
-//            }
+            deleteButton.setOnClickListener {
+                    onClick(RoleClickable.DeleteClick(role))
+            }
         }
     }
 
     sealed class RoleClickable {
         data class EditClick(val role: RolesDE) : RoleClickable()
-        data class DeleteClick(val roleId: Long) : RoleClickable()
+        data class DeleteClick(val role: RolesDE) : RoleClickable()
     }
 
     private class RoleDiffCallback : DiffUtil.ItemCallback<RolesDE>() {

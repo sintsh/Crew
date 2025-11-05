@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crew.domain.entities.RolesDE
+import com.example.crew.domain.usecases.role.DeleteRoleUseCase
 import com.example.crew.domain.usecases.role.GetAllRolesUseCase
+import com.example.crew.domain.usecases.role.GetRoleByIdUseCase
 import com.example.crew.domain.usecases.role.InsertRoleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +22,9 @@ import javax.inject.Inject
 @HiltViewModel
 class AdminRolesViewModel @Inject constructor(
     private val getAllRolesUseCase: GetAllRolesUseCase,
-    private val insertRoleUseCase: InsertRoleUseCase
+    private val insertRoleUseCase: InsertRoleUseCase,
+    private val deleteRoleUseCase: DeleteRoleUseCase,
+    private val getRoleByIdUseCase: GetRoleByIdUseCase
 ): ViewModel() {
     private val _limit = MutableStateFlow(6)
     val limit = _limit.asStateFlow()
@@ -52,13 +56,8 @@ class AdminRolesViewModel @Inject constructor(
         Pair(currentOffset, currentLimit)
     }.flatMapLatest { (currentOffset, currentLimit) ->
         val dbOffset = currentOffset * currentLimit
-        //if (_searchQueries.value.isNotBlank()){
-//            searchEmployeeUseCase(_searchQueries.value).map {
-//                it
-//            }
-      //  }else{
+
             getAllRolesUseCase()//currentLimit, dbOffset)
-        // }
     }
 
     init {
@@ -81,6 +80,14 @@ class AdminRolesViewModel @Inject constructor(
         viewModelScope.launch {
             insertRoleUseCase(role)
             fetchRoleCount()
+        }
+    }
+
+
+    fun deleteRole(roleId: Long){
+        viewModelScope.launch {
+            val role: RolesDE = getRoleByIdUseCase(roleId)
+            deleteRoleUseCase(role)
         }
     }
 

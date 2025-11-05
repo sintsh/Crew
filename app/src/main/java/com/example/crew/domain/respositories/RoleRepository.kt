@@ -7,4 +7,9 @@ interface RoleRepository {
     suspend fun getAllRoles(): Flow<List<RolesDE>>
 
     suspend fun insertRole(rolesDE: RolesDE): Long
+
+
+    suspend fun deleteRole(rolesDE: RolesDE)
+
+    suspend fun getRoleById(roleId: Long): RolesDE
 }

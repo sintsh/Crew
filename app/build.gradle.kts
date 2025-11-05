@@ -12,6 +12,13 @@ android {
     namespace = "com.example.crew"
     compileSdk = 36
 
+
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
+
     defaultConfig {
         applicationId = "com.example.crew"
         minSdk = 24
@@ -41,6 +48,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
 }
 
 dependencies {
@@ -70,10 +78,13 @@ dependencies {
 
 
     //test implementations
-    testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     testImplementation(libs.androidx.room.testing)
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(libs.mockk)
+    testImplementation(libs.junit.platform.launcher)
 
     //room paging
     implementation(libs.androidx.room.paging)

@@ -1,10 +1,12 @@
 package com.example.crew.app.ui.fragments.admin
 
 import android.os.Bundle
+import android.text.Html
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +22,7 @@ import com.example.crew.databinding.FragmentAdminHomeBinding
 import com.example.crew.databinding.FragmentAdminRolesBinding
 import com.example.crew.domain.entities.RoleWithAction
 import com.example.crew.domain.entities.RolesDE
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -75,7 +78,19 @@ class AdminRolesFragment : Fragment(R.layout.fragment_admin_home) {
         roleAdapter = RoleListRecyclerAdapter{ click ->
             when (click) {
                 is RoleListRecyclerAdapter.RoleClickable.DeleteClick -> {
-                   // viewModel.deleteRole(click.roleId)
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Delete role <${click.role.roleName}>!")
+                        .setMessage("Are you sure you want to delete?")
+                        .setPositiveButton("continue"){dialog,_->
+                            viewModel.deleteRole(click.role.roleId)
+                            Snackbar.make(binding.root,"undo", Snackbar.LENGTH_SHORT)
+                                .setText("Undo the deleted role")
+                                .setAction("Undo"){
+                                        viewModel.addRole(click.role)
+                                }
+                                .show()
+                        }
+                        .show()
                 }
                 is RoleListRecyclerAdapter.RoleClickable.EditClick -> {
                     navigateToEditPage(click.role)
