@@ -120,7 +120,16 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
 
 
     private fun setupRecyclerView() {
-        employeeAdapter = EmployeeListRecyclerAdapter{ click ->
+        employeeAdapter = EmployeeListRecyclerAdapter(rolesFLow = viewModel.roles,
+            roleActions = {
+                when(it){
+                    is EmployeeListRecyclerAdapter.DataReceiver.RoleData -> {
+                        viewModel.addEmployeeRole(it.employeeId,it.selected)
+                        viewModel.deleteEmployeeRole(it.employeeId,it.unselected)
+                    }
+                }
+            },
+            onClick = { click ->
             when (click) {
                 is EmployeeListRecyclerAdapter.EmployeeClickable.DeleteClick -> {
                     viewModel.deleteEmployee(click.employeeId)
@@ -129,7 +138,7 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
                     navigateToEditPage(click.employeeId)
                 }
             }
-        }
+        })
 
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -142,7 +151,7 @@ class AdminHomeFragment : Fragment(R.layout.fragment_admin_home) {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 launch {
-                    viewModel.employeeList.collectLatest { employees ->
+                    viewModel.employeeWithRoles.collectLatest { employees ->
                         employeeAdapter.submitList(employees)
                     }
                 }
