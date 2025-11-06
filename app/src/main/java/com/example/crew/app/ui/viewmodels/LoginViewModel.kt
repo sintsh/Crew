@@ -10,8 +10,18 @@ import com.example.crew.app.ui.helpers.login.LoginFormState
 import com.example.crew.app.ui.helpers.login.LoginResult
 import com.example.crew.data.repositories.LoginRepository
 import com.example.crew.data.Result
+import com.example.crew.domain.usecases.employee.GetEmployeeWithRoles
+import com.example.crew.domain.usecases.employee.GetEmployeesUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+//@HiltViewModel
+class LoginViewModel// @Inject constructor
+    (
+    private val loginRepository: LoginRepository,
+   // private val getEmployeeWithRoles: GetEmployeeWithRoles,
+    //private val getEmployeesUseCase: GetEmployeesUseCase
+) : ViewModel() {
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm

@@ -15,8 +15,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.crew.R
 import com.example.crew.app.ui.helpers.admin.ActionType
@@ -24,6 +27,8 @@ import com.example.crew.app.ui.helpers.login.LoggedInUserView
 import com.example.crew.app.ui.viewmodels.LoginViewModel
 import com.example.crew.app.ui.viewmodels.LoginViewModelFactory
 import com.example.crew.databinding.LoginLayoutBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class LoginFragment : Fragment(R.layout.login_layout) {
@@ -42,6 +47,9 @@ class LoginFragment : Fragment(R.layout.login_layout) {
         val password = binding.password
         val login = binding.login
         val loading = binding.loading
+        val navController = findNavController()
+        val navGraph = navController.navInflater.inflate(R.navigation.crew_navigation)
+
 
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
@@ -68,11 +76,21 @@ class LoginFragment : Fragment(R.layout.login_layout) {
                 showLoginFailed(loginResult.error)
             }
             if (loginResult.success != null) {
-                val nav = findNavController()
-                val direction = LoginFragmentDirections.actionLoginFragmentToAdminMainFragment()
+                login.isEnabled = false
+                loading.visibility = View.VISIBLE
+                viewLifecycleOwner.lifecycleScope.launch {
+                    //repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        delay(2000)
+                        val nav = findNavController()
+                        val direction = LoginFragmentDirections.actionLoginFragmentToAdminMainFragment()
 //                    actionType = ActionType.NULL)
-                nav.navigate(direction)
-                updateUiWithUser(loginResult.success)
+                        nav.navigate(direction)
+                        navGraph.setStartDestination(R.id.adminMainFragment)
+                        updateUiWithUser(loginResult.success)
+
+                        navController.graph = navGraph
+            //        }
+            }
             }
 
 //            setResult(RESULT_OK)
@@ -108,7 +126,6 @@ class LoginFragment : Fragment(R.layout.login_layout) {
             }
 
             login.setOnClickListener {
-                loading.visibility = View.VISIBLE
                 loginViewModel.login(username.text.toString(), password.text.toString())
             }
         }
