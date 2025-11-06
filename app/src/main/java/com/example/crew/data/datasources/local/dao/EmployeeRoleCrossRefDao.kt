@@ -20,6 +20,10 @@ interface EmployeeRoleCrossRefDao {
     fun getEmployeesWithRoles(): Flow<List<EmployeeWithRoles>>
 
     @Transaction
+    @Query("SELECT * FROM employees WHERE username = :username")
+    suspend fun getEmployeesWithRolesByUserName(username: String): EmployeeWithRoles?
+
+    @Transaction
     @Query("SELECT * FROM roles")
     fun getRoleWithEmployees(): Flow<List<RolesWithEmployee>>
 

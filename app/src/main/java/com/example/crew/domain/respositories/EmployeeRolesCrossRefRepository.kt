@@ -1,13 +1,15 @@
 package com.example.crew.domain.respositories
 
+import com.example.crew.app.ui.helpers.states.Result
 import com.example.crew.data.datasources.local.entity.EmployeeRoleCrossRef
-import com.example.crew.data.datasources.local.entity.RolesWithEmployee
 import com.example.crew.domain.entities.EmployeeWithRolesDE
 import com.example.crew.domain.entities.RolesWithEmployeeDE
 import kotlinx.coroutines.flow.Flow
 
 interface EmployeeRolesCrossRefRepository {
     suspend fun getEmployeesWithRoles(): Flow<List<EmployeeWithRolesDE>>
+
+    suspend fun getEmployeeWithRolesByUserName(username:String): Result<EmployeeWithRolesDE>
 
     suspend fun getRolesWithEmployees(): Flow<List<RolesWithEmployeeDE>>
 

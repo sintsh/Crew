@@ -1,26 +1,26 @@
 package com.example.crew.app.ui.viewmodels
 
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.crew.R
 import com.example.crew.app.ui.helpers.login.LoggedInUserView
 import com.example.crew.app.ui.helpers.login.LoginFormState
 import com.example.crew.app.ui.helpers.login.LoginResult
-import com.example.crew.data.repositories.LoginRepository
-import com.example.crew.data.Result
-import com.example.crew.domain.usecases.employee.GetEmployeeWithRoles
-import com.example.crew.domain.usecases.employee.GetEmployeesUseCase
+import com.example.crew.app.ui.helpers.states.Result
+import com.example.crew.app.ui.helpers.states.RoleType
+import com.example.crew.data.datasources.local.entity.EmployeeWithRoles
+import com.example.crew.domain.usecases.employee.GetEmployeeWithRolesByUserNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-//@HiltViewModel
-class LoginViewModel// @Inject constructor
-    (
-    private val loginRepository: LoginRepository,
-   // private val getEmployeeWithRoles: GetEmployeeWithRoles,
-    //private val getEmployeesUseCase: GetEmployeesUseCase
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val getEmployeeWithRolesByUserNameUseCase: GetEmployeeWithRolesByUserNameUseCase
 ) : ViewModel() {
 
     private val _loginForm = MutableLiveData<LoginFormState>()
@@ -30,14 +30,38 @@ class LoginViewModel// @Inject constructor
     val loginResult: LiveData<LoginResult> = _loginResult
 
     fun login(username: String, password: String) {
-        val result = loginRepository.login(username, password)
+        viewModelScope.launch {
+            val employeeResult = getEmployeeWithRolesByUserNameUseCase(username)
 
-        if (result is Result.Success) {
-            _loginResult.value =
-                LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
-        } else {
-            _loginResult.value = LoginResult(error = R.string.login_failed)
+            when(employeeResult){
+                is Result.Error -> {
+                    _loginResult.value = LoginResult(error = employeeResult.message)
+                }
+                is Result.Success -> {
+                    val adminRole = employeeResult.data.roles.any {
+                        it.roleName == "admin"
+                    }
+
+                    _loginResult.value = LoginResult(
+                        success = LoggedInUserView(
+                            displayName = employeeResult.data.employee.name,
+                            adminRole = if (adminRole) RoleType.ADMIN else RoleType.NORMAL
+                        ),
+
+                    )
+
+
+                }
+            }
         }
+//        val result = loginRepository.login(username, password)
+//
+//        if (result is Result.Success) {
+//            _loginResult.value =
+//                LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
+//        } else {
+//            _loginResult.value = LoginResult(error = R.string.login_failed)
+//        }
     }
 
     fun loginDataChanged(username: String, password: String) {

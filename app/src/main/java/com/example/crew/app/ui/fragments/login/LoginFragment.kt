@@ -15,6 +15,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -24,16 +25,19 @@ import androidx.navigation.fragment.findNavController
 import com.example.crew.R
 import com.example.crew.app.ui.helpers.admin.ActionType
 import com.example.crew.app.ui.helpers.login.LoggedInUserView
+import com.example.crew.app.ui.helpers.states.RoleType
 import com.example.crew.app.ui.viewmodels.LoginViewModel
 import com.example.crew.app.ui.viewmodels.LoginViewModelFactory
 import com.example.crew.databinding.LoginLayoutBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
+@AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.login_layout) {
 
-    private lateinit var loginViewModel: LoginViewModel
+    private val loginViewModel: LoginViewModel by viewModels()
 
 
     override fun onCreateView(
@@ -49,11 +53,6 @@ class LoginFragment : Fragment(R.layout.login_layout) {
         val loading = binding.loading
         val navController = findNavController()
         val navGraph = navController.navInflater.inflate(R.navigation.crew_navigation)
-
-
-
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
 
         loginViewModel.loginFormState.observe(viewLifecycleOwner, Observer {
             val loginState = it ?: return@Observer
@@ -78,19 +77,22 @@ class LoginFragment : Fragment(R.layout.login_layout) {
             if (loginResult.success != null) {
                 login.isEnabled = false
                 loading.visibility = View.VISIBLE
-                viewLifecycleOwner.lifecycleScope.launch {
-                    //repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        delay(2000)
-                        val nav = findNavController()
-                        val direction = LoginFragmentDirections.actionLoginFragmentToAdminMainFragment()
-//                    actionType = ActionType.NULL)
-                        nav.navigate(direction)
-                        navGraph.setStartDestination(R.id.adminMainFragment)
-                        updateUiWithUser(loginResult.success)
 
-                        navController.graph = navGraph
-            //        }
-            }
+                val nav = findNavController()
+
+                val direction = if (loginResult.success.adminRole == RoleType.ADMIN)
+                    LoginFragmentDirections.actionLoginFragmentToAdminMainFragment()
+                    else null
+                direction?.let { dir ->
+                    nav.navigate(dir)
+                    navGraph.setStartDestination(R.id.adminMainFragment)
+                    updateUiWithUser(loginResult.success)
+
+                    navController.graph = navGraph
+                }
+
+                loading.visibility = View.INVISIBLE
+                login.isEnabled = true
             }
 
 //            setResult(RESULT_OK)
@@ -145,7 +147,7 @@ class LoginFragment : Fragment(R.layout.login_layout) {
         ).show()
     }
 
-    private fun showLoginFailed(@StringRes errorString: Int) {
+    private fun showLoginFailed(errorString: String) {
         Toast.makeText(context?.applicationContext, errorString, Toast.LENGTH_SHORT).show()
     }
 }
@@ -154,8 +156,6 @@ class LoginFragment : Fragment(R.layout.login_layout) {
 fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
     this.addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(editable: Editable?) {
-            Log.i("detectionUsername", "onCreate: changing username")
-
             afterTextChanged.invoke(editable.toString())
         }
 

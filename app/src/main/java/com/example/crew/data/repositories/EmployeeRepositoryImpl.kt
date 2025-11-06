@@ -29,6 +29,8 @@ class EmployeeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveEmployee(employee: Employee) {
+        Log.i("checkthisout", "to be sent: data found in repo")
+
         employeeDao.insertEmployee(employee)
     }
 

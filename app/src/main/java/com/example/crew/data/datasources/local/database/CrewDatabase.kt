@@ -12,8 +12,8 @@ import com.example.crew.data.datasources.local.entity.Role
 
 @Database(
     entities = [Employee::class, Role::class, EmployeeRoleCrossRef::class],
-    version = 1,
-    //autoMigrations = [AutoMigration(from = 1, to = 2)],
+    version = 2,
+    autoMigrations = [AutoMigration(from = 1, to = 2)],
     exportSchema = true)
 abstract class CrewDatabase: RoomDatabase(){
     abstract fun employeeDao(): EmployeeDao

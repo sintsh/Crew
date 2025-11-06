@@ -1,8 +1,11 @@
 package com.example.crew.data.repositories
 
+import com.example.crew.app.ui.helpers.states.Result
 import com.example.crew.data.datasources.local.dao.EmployeeRoleCrossRefDao
 import com.example.crew.data.datasources.local.entity.EmployeeRoleCrossRef
+import com.example.crew.data.datasources.local.entity.EmployeeWithRoles
 import com.example.crew.data.datasources.local.entity.toEmployeeWithRolesDE
+import com.example.crew.domain.entities.EmployeeDE
 import com.example.crew.domain.entities.EmployeeWithRolesDE
 import com.example.crew.domain.entities.RolesWithEmployeeDE
 import com.example.crew.domain.respositories.EmployeeRolesCrossRefRepository
@@ -19,6 +22,12 @@ class EmployeeWithRolesRepositoryImpl @Inject constructor(
                 it.toEmployeeWithRolesDE()
             }
         }
+    }
+
+    override suspend fun getEmployeeWithRolesByUserName(username: String): Result<EmployeeWithRolesDE> {
+        val employee = employeeRoleCrossRefDao.getEmployeesWithRolesByUserName(username)
+        return if (employee!=null) Result.Success(employee.toEmployeeWithRolesDE())
+        else Result.Error("Employee not found!")
     }
 
     override suspend fun getRolesWithEmployees(): Flow<List<RolesWithEmployeeDE>> {
