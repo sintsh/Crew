@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/material_dynamic_neutral0"
+    tools:context=".app.ui.fragments.employee.EmployeeFragment"
     >
     <RelativeLayout
         android:id="@+id/title"
@@ -15,9 +17,10 @@
         android:gravity="center"
         >
         <TextView
+            android:id="@+id/welcome_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Admin Page"
+            android:text="Welcome"
             android:fontFamily="sans-serif-condensed"
             android:textSize="30sp"
             android:layout_centerHorizontal="true"
@@ -30,13 +33,13 @@
             android:id="@+id/logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:text="logout"
             style="@style/CustomButtonStyle"
-            android:layout_alignParentEnd="true"
             />
     </RelativeLayout>
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/admin_frag_holder"
+        android:id="@+id/employee_frag_holder"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -54,8 +57,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:labelVisibilityMode="labeled"
-        app:layout_constraintTop_toBottomOf="@id/admin_frag_holder"
+        app:layout_constraintTop_toBottomOf="@id/employee_frag_holder"
         app:menu="@menu/admin_menu"
+        />
+
+    <ProgressBar
+        android:id="@+id/loading_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

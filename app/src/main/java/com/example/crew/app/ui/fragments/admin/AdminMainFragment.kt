@@ -41,6 +41,9 @@ class AdminMainFragment : Fragment(R.layout.fragment_admin_main) {
             tab.text = pageNameOptions[pos%3]
         }.attach()
 
+        binding.logout.setOnClickListener {
+            findNavController().navigate(AdminMainFragmentDirections.actionAdminToLogout())
+        }
 
         return binding.root
     }

@@ -1,83 +1,116 @@
 package com.example.crew.domain.usecases.employee
-
-import com.example.crew.app.ui.viewmodels.AdminHomeViewModel
 import com.example.crew.data.datasources.local.entity.Employee
+import com.example.crew.domain.entities.RolesDE
 import com.example.crew.domain.respositories.EmployeeRepository
+import com.example.crew.domain.respositories.RoleRepository
+import com.example.crew.domain.usecases.role.GetAllRolesUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeAll
+import io.mockk.just
+import io.mockk.runs
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
 class SaveEmployeeUseCaseTest {
     @MockK
-    private lateinit var myRepository: EmployeeRepository
+    private lateinit var employeeRepository: EmployeeRepository
 
     @MockK
-    private lateinit var adminHomeViewModelMock: AdminHomeViewModel
-
-
+    private lateinit var roleRepository: RoleRepository
 
     private lateinit var saveEmployeeUseCase: SaveEmployeeUseCase
 
-    companion object{
-        private const val TAG = "SAVE_EMPLOYEE_TAG"
-        @BeforeAll
-        @JvmStatic
-        fun beforeAll(){
-            print("beforeAll: Initializing")
-        }
+    private lateinit var getAllRolesUseCase: GetAllRolesUseCase
 
-        @AfterAll
-        @JvmStatic
-        fun afterAll(){
-            print("afterAll: Cleaning up")
-        }
-
-    }
 
     @BeforeEach
-    fun beforeEach(){
-        coEvery { myRepository.getEmployeeById(1) } returns Employee(1, "johny","John","Jacobson",19)
+    fun setUpClass() {
+        saveEmployeeUseCase = SaveEmployeeUseCase(employeeRepository)
+        getAllRolesUseCase = GetAllRolesUseCase(roleRepository)
 
-
-        saveEmployeeUseCase = SaveEmployeeUseCase(myRepository)
+        coEvery { getAllRolesUseCase() } returns flowOf(listOf<RolesDE>(RolesDE(1, "admin")))
 
     }
 
+
+
     @Test
-    fun `test employee values with correct data inserted`(){
-        //arrange
-        val employee = Employee(1, "johny","John","Jacobson",19)
+    fun `checkEmployeeSavable should return true for employee older than 18`() {
+        // Arrange
+        val employee = Employee(1, "johny", "John", "Jacobson", 19)
 
-        adminHomeViewModelMock.addEmployee(employee)
-
-        coVerify {
-            myRepository.saveEmployee(employee)
-        }
-
+        // Act
         val result = saveEmployeeUseCase.checkEmployeeSavable(employee)
 
-        //assert
+        // Assert
         Assertions.assertTrue(result)
     }
 
-
     @Test
-    fun `test employee values with incorrect age inserted`(){
-        //arrange
-        val employee = Employee(1, "johny","John","Jacobson",18)
+    fun `checkEmployeeSavable should return false for employee aged 18 or younger`() {
+        // Arrange
+        val employee = Employee(1, "johny", "John", "Jacobson", 18)
 
+        // Act
         val result = saveEmployeeUseCase.checkEmployeeSavable(employee)
 
-        //assert
+        // Assert
         Assertions.assertFalse(result)
+    }
+
+
+    @Test
+    fun `invoke should call repository's saveEmployee when employee is valid`() =
+        runBlocking {
+        // Arrange
+        val validEmployee = Employee(1, "johny", "John", "Jacobson", 25)
+        coEvery { employeeRepository.saveEmployee(validEmployee) } just runs
+
+        saveEmployeeUseCase.invoke(validEmployee)
+
+            coVerify(exactly = 1) {
+                employeeRepository.saveEmployee(validEmployee)
+            }
+    }
+
+    @Test
+    fun `invoke should throw exception and not call repository when employee is invalid`() =
+        runBlocking {
+        // Arrange
+        val invalidEmployee = Employee(1, "johny", "John", "Jacobson", 17)
+
+        assertThrows<IllegalArgumentException> {
+            runBlocking {
+                saveEmployeeUseCase.invoke(invalidEmployee)
+            }
+        }
+
+        coVerify(exactly = 0) {
+            employeeRepository.saveEmployee(any())
+        }
+    }
+
+    @Test
+    fun `getAllRoles should return list of roles when data is available`(){
+        runBlocking {
+            val roles: Flow<List<RolesDE>> = getAllRolesUseCase()
+
+
+            roles.collectLatest { roles->
+                print("roles : $roles")
+                assert(roles.isNotEmpty())
+            }
+        }
     }
 
 }

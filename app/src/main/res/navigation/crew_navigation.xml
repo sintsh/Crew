@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_loginFragment_to_adminMainFragment"
             app:destination="@id/adminMainFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_employeeFragment"
+            app:destination="@id/employeeFragment" />
     </fragment>
     <dialog
         android:id="@+id/employeeActionDialogFragment"
@@ -40,6 +43,12 @@
         <action
             android:id="@+id/action_adminMainFragment_to_roleDialogFragment"
             app:destination="@id/roleDialogFragment" />
+        <action
+            android:id="@+id/action_admin_to_logout"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"
+            />
     </fragment>
     <dialog
         android:id="@+id/roleDialogFragment"
@@ -55,4 +64,19 @@
             android:name="action"
             app:argType="com.example.crew.app.ui.helpers.admin.ActionType" />
     </dialog>
+    <fragment
+        android:id="@+id/employeeFragment"
+        android:name="com.example.crew.app.ui.fragments.employee.EmployeeFragment"
+        android:label="fragment_employee"
+        tools:layout="@layout/fragment_employee" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_employee_to_logout"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"
+            />
+    </fragment>
 </navigation>

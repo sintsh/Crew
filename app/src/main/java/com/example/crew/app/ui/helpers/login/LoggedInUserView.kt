@@ -7,5 +7,6 @@ import com.example.crew.app.ui.helpers.states.RoleType
  */
 data class LoggedInUserView(
     val displayName: String,
-    val adminRole: RoleType = RoleType.NORMAL
+    val adminRole: RoleType = RoleType.NORMAL,
+    val username: String?=null
 )

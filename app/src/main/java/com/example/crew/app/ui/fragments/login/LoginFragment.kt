@@ -25,6 +25,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.crew.R
 import com.example.crew.app.ui.helpers.admin.ActionType
 import com.example.crew.app.ui.helpers.login.LoggedInUserView
+import com.example.crew.app.ui.helpers.login.LoginEvent
+import com.example.crew.app.ui.helpers.states.PageType
 import com.example.crew.app.ui.helpers.states.RoleType
 import com.example.crew.app.ui.viewmodels.LoginViewModel
 import com.example.crew.app.ui.viewmodels.LoginViewModelFactory
@@ -78,23 +80,38 @@ class LoginFragment : Fragment(R.layout.login_layout) {
                 login.isEnabled = false
                 loading.visibility = View.VISIBLE
 
-                val nav = findNavController()
 
-                val direction = if (loginResult.success.adminRole == RoleType.ADMIN)
-                    LoginFragmentDirections.actionLoginFragmentToAdminMainFragment()
-                    else null
-                direction?.let { dir ->
-                    nav.navigate(dir)
-                    navGraph.setStartDestination(R.id.adminMainFragment)
                     updateUiWithUser(loginResult.success)
 
-                    navController.graph = navGraph
-                }
 
                 loading.visibility = View.INVISIBLE
                 login.isEnabled = true
             }
         })
+
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            loginViewModel.actions.collect { action->
+                when(action){
+                    is LoginEvent.navigate -> {
+                        val nav = findNavController()
+
+                        val direction = if (action.route == PageType.ADMIN) {
+                            navGraph.setStartDestination(R.id.adminMainFragment)
+                            LoginFragmentDirections.actionLoginFragmentToAdminMainFragment()
+                        }
+                        else {
+                            LoginFragmentDirections.actionLoginFragmentToEmployeeFragment(action.username)
+                        }
+                        nav.navigate(direction)
+                        findNavController().graph = navGraph
+                    }
+                    is LoginEvent.showToast -> {
+                        Toast.makeText(context?.applicationContext, action.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
 
         username.afterTextChanged {
             loginViewModel.loginDataChanged(
