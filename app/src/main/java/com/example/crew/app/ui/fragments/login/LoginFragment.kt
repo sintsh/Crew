@@ -94,11 +94,6 @@ class LoginFragment : Fragment(R.layout.login_layout) {
                 loading.visibility = View.INVISIBLE
                 login.isEnabled = true
             }
-
-//            setResult(RESULT_OK)
-
-            //Complete and destroy login activity once successful
-            // finish()
         })
 
         username.afterTextChanged {
