@@ -3,7 +3,11 @@ package com.example.crew.app.ui.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.crew.domain.entities.EmployeeDE
 import com.example.crew.domain.entities.RolesDE
+import com.example.crew.domain.entities.RolesWithEmployeeDE
+import com.example.crew.domain.usecases.employee.GetEmployeesByRoleNameUseCase
+import com.example.crew.domain.usecases.employee.GetRolesWithEmployees
 import com.example.crew.domain.usecases.role.DeleteRoleUseCase
 import com.example.crew.domain.usecases.role.GetAllRolesUseCase
 import com.example.crew.domain.usecases.role.GetRoleByIdUseCase
@@ -24,7 +28,9 @@ class AdminRolesViewModel @Inject constructor(
     private val getAllRolesUseCase: GetAllRolesUseCase,
     private val insertRoleUseCase: InsertRoleUseCase,
     private val deleteRoleUseCase: DeleteRoleUseCase,
-    private val getRoleByIdUseCase: GetRoleByIdUseCase
+    private val getRoleByIdUseCase: GetRoleByIdUseCase,
+    private val getEmployeesByRoleNameUseCase: GetEmployeesByRoleNameUseCase,
+    private val getRolesWithEmployees: GetRolesWithEmployees
 ): ViewModel() {
     private val _limit = MutableStateFlow(6)
     val limit = _limit.asStateFlow()
@@ -37,6 +43,9 @@ class AdminRolesViewModel @Inject constructor(
     private val _searchQueries = MutableStateFlow("")
     val searchQueries = _searchQueries.asStateFlow()
 
+    private val _employees = MutableStateFlow<List<EmployeeDE>>(listOf())
+    val employees = _employees.asStateFlow()
+
     val hasNextPage: Flow<Boolean> =
         combine(offset, limit, maxRoleCount) { currentOffset, currentLimit, maxCount ->
             (currentOffset + 1) * currentLimit < maxCount
@@ -47,7 +56,7 @@ class AdminRolesViewModel @Inject constructor(
     }
 
     private val dataUpdateTrigger = MutableStateFlow(0)
-    var roles: Flow<List<RolesDE>> = combine(
+    var roles: Flow<List<RolesWithEmployeeDE>> = combine(
         offset,
         limit,
         _searchQueries.debounce(600),
@@ -57,7 +66,7 @@ class AdminRolesViewModel @Inject constructor(
     }.flatMapLatest { (currentOffset, currentLimit) ->
         val dbOffset = currentOffset * currentLimit
 
-            getAllRolesUseCase()//currentLimit, dbOffset)
+            getRolesWithEmployees()//currentLimit, dbOffset)
     }
 
     init {
@@ -88,6 +97,14 @@ class AdminRolesViewModel @Inject constructor(
         viewModelScope.launch {
             val role: RolesDE = getRoleByIdUseCase(roleId)
             deleteRoleUseCase(role)
+        }
+    }
+
+    fun getEmployeesByRoleName(roleName:String){
+        viewModelScope.launch {
+            getEmployeesByRoleNameUseCase(roleName).collectLatest {
+                _employees.value = it
+            }
         }
     }
 

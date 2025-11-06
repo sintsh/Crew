@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AlertDialog.*
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -75,10 +76,11 @@ class AdminRolesFragment : Fragment(R.layout.fragment_admin_home) {
 
 
     private fun setupRecyclerView() {
+        val employeesFlow = viewModel.employees
         roleAdapter = RoleListRecyclerAdapter{ click ->
             when (click) {
                 is RoleListRecyclerAdapter.RoleClickable.DeleteClick -> {
-                    AlertDialog.Builder(requireContext())
+                    Builder(requireContext())
                         .setTitle("Delete role <${click.role.roleName}>!")
                         .setMessage("Are you sure you want to delete?")
                         .setPositiveButton("continue"){dialog,_->
@@ -94,6 +96,10 @@ class AdminRolesFragment : Fragment(R.layout.fragment_admin_home) {
                 }
                 is RoleListRecyclerAdapter.RoleClickable.EditClick -> {
                     navigateToEditPage(click.role)
+                }
+
+                is RoleListRecyclerAdapter.RoleClickable.EmployeeButton -> {
+                  //  viewModel.getEmployeesByRoleName(click.roleName)
                 }
             }
         }
