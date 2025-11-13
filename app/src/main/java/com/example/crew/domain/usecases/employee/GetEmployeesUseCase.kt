@@ -5,6 +5,7 @@ import com.example.crew.domain.entities.EmployeeDE
 import com.example.crew.domain.respositories.EmployeeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetEmployeesUseCase @Inject constructor(
@@ -15,8 +16,10 @@ class GetEmployeesUseCase @Inject constructor(
     }
 
 
-    suspend fun getById(employeeId: Long): Flow<EmployeeDE> {
-        return flowOf(employeeRepository.getEmployeeById(employeeId).toEmployeeDE())
+    suspend fun getById(employeeId: Long): Flow<EmployeeDE?> {
+        return employeeRepository.getEmployeeById(employeeId).map {
+            it?.toEmployeeDE()
+        }
     }
 
     suspend fun getEmployeeCount():Int{

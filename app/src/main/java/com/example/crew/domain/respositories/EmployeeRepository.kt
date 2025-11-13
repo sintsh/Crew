@@ -13,7 +13,7 @@ interface EmployeeRepository {
 
     suspend fun deleteAllEmployees()
 
-    suspend fun getEmployeeById(employeeId: Long): Employee
+    suspend fun getEmployeeById(employeeId: Long): Flow<Employee?>
 
     suspend fun getEmployeeCount(): Int
 

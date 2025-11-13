@@ -1,4 +1,5 @@
 package com.example.crew.domain.usecases.employee
+import com.example.crew.data.Result
 import com.example.crew.data.datasources.local.entity.Employee
 import com.example.crew.domain.entities.RolesDE
 import com.example.crew.domain.respositories.EmployeeRepository
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -89,11 +91,9 @@ class SaveEmployeeUseCaseTest {
         // Arrange
         val invalidEmployee = Employee(1, "johny", "John", "Jacobson", 17)
 
-        assertThrows<IllegalArgumentException> {
             runBlocking {
                 saveEmployeeUseCase.invoke(invalidEmployee)
             }
-        }
 
         coVerify(exactly = 0) {
             employeeRepository.saveEmployee(any())

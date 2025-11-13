@@ -6,6 +6,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
     id("androidx.room") version "2.8.3"
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -26,7 +27,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.crew.HiltTestRunner"
     }
 
     buildTypes {
@@ -48,6 +49,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
 
 }
 
@@ -77,17 +79,56 @@ dependencies {
 
 
 
-    //test implementations
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+
+// --- Local Unit Tests (test folder) ---
     testImplementation(libs.androidx.room.testing)
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
     testImplementation(libs.mockk)
     testImplementation(libs.junit.platform.launcher)
 
+// --- Android Instrumentation Tests (androidTest folder) ---
+    androidTestImplementation(libs.androidx.junit) // androidx.test.ext:junit
+//    androidTestImplementation(libs.androidx.espresso.core)
+//    androidTestImplementation("androidx.test:rules:1.5.0")
+//    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:core:1.6.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.test:rules:1.6.1")
+
+// Hilt Testing - The Corrected Part
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.57.2")
+    kspAndroidTest("com.google.dagger:hilt-compiler:2.57.2") // Correctly uses kspAndroidTest
+
+// Mockito for Instrumentation Tests
+    androidTestImplementation("org.mockito:mockito-core:5.5.0")
+    androidTestImplementation("org.mockito:mockito-android:5.5.0")
+
+// Fragment and Navigation Testing
+    debugImplementation("androidx.fragment:fragment-testing:1.6.2")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.7.5")
+
+
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
+    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
+
+
     //room paging
     implementation(libs.androidx.room.paging)
+}
+
+configurations.all {
+    resolutionStrategy {
+        force(
+            "androidx.test:core:1.6.1",
+            "androidx.test:runner:1.6.2",
+            "androidx.test:rules:1.6.1",
+            "androidx.test.espresso:espresso-core:3.6.1",
+            "androidx.test.ext:junit:1.2.1"
+        )
+    }
 }
 
 

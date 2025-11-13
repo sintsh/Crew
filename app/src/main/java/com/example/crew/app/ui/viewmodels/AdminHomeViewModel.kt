@@ -192,7 +192,7 @@ class AdminHomeViewModel @Inject constructor(
         _offset.value = 0
     }
 
-    suspend fun getEmployeeById(employeeId: Long): Flow<EmployeeDE>{
+    suspend fun getEmployeeById(employeeId: Long): Flow<EmployeeDE?>{
             return getEmployeesUseCase.getById(employeeId)
     }
 }

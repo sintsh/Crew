@@ -1,5 +1,6 @@
 package com.example.crew.data.datasources.local.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -26,7 +27,7 @@ interface EmployeeDao {
     suspend fun deleteAllEmployees()
 
     @Query("SELECT * FROM employees WHERE employeeId = :employeeId")
-    suspend fun getEmployeeById(employeeId: Long): Employee
+    fun getEmployeeById(employeeId: Long): Flow<Employee?>
 
     @Query("SELECT COUNT(*) FROM employees")
     suspend fun getEmployeeCount():Int

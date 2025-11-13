@@ -41,20 +41,28 @@ class LoginFragment : Fragment(R.layout.login_layout) {
 
     private val loginViewModel: LoginViewModel by viewModels()
 
+    private var _binding: LoginLayoutBinding? = null
+    private val binding get() = _binding!!
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        val binding = LoginLayoutBinding.inflate(inflater, container, false)
+         _binding = LoginLayoutBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val username = binding.username
         val password = binding.password
         val login = binding.login
         val loading = binding.loading
-        val navController = findNavController()
-        val navGraph = navController.navInflater.inflate(R.navigation.crew_navigation)
 
         loginViewModel.loginFormState.observe(viewLifecycleOwner, Observer {
             val loginState = it ?: return@Observer
@@ -81,7 +89,7 @@ class LoginFragment : Fragment(R.layout.login_layout) {
                 loading.visibility = View.VISIBLE
 
 
-                    updateUiWithUser(loginResult.success)
+                updateUiWithUser(loginResult.success)
 
 
                 loading.visibility = View.INVISIBLE
@@ -97,14 +105,14 @@ class LoginFragment : Fragment(R.layout.login_layout) {
                         val nav = findNavController()
 
                         val direction = if (action.route == PageType.ADMIN) {
-                            navGraph.setStartDestination(R.id.adminMainFragment)
+                            //navGraph.setStartDestination(R.id.adminMainFragment)
                             LoginFragmentDirections.actionLoginFragmentToAdminMainFragment()
                         }
                         else {
                             LoginFragmentDirections.actionLoginFragmentToEmployeeFragment(action.username)
                         }
                         nav.navigate(direction)
-                        findNavController().graph = navGraph
+                      //  findNavController().graph = navGraph
                     }
                     is LoginEvent.showToast -> {
                         Toast.makeText(context?.applicationContext, action.message, Toast.LENGTH_SHORT).show()
@@ -143,8 +151,6 @@ class LoginFragment : Fragment(R.layout.login_layout) {
                 loginViewModel.login(username.text.toString(), password.text.toString())
             }
         }
-
-        return binding.root
     }
 
 
