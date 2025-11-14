@@ -26,6 +26,8 @@ This Android application follows **MVVM (Model-View-ViewModel)** architecture co
 └─────────────────────────────────────┘
 ```
 
+
+
 ### Key Technologies:
 - **Room Database** - Local SQLite database
 - **Hilt** - Dependency Injection
